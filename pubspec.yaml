@@ -1,0 +1,48 @@
+name: flutter_ocr_app
+description: A Flutter app for extracting text from PDFs and images using Google ML Kit OCR.
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  # Core OCR Functionality
+  google_mlkit_text_recognition: ^0.14.0
+
+  # File Picking
+  image_picker: ^1.1.2
+  file_picker: ^9.0.0
+  #pdf_render: ^1.4.12
+
+  # PDF Handling
+  pdfx: ^2.8.0
+  pdf_image_renderer: ^1.0.1
+  syncfusion_flutter_pdf: ^28.2.6
+
+  # File System & Paths
+  path_provider: ^2.1.5
+  path: ^1.9.1
+ 
+  # UI Enhancements
+  flutter_animate: ^4.5.2
+  share_plus: ^7.0.2
+  provider: ^6.1.2
+  shimmer: ^3.0.0
+  image: ^4.5.2
+  google_fonts: ^6.2.1
+  cupertino_icons: ^1.0.8
+  lottie: ^3.3.1
+  
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^2.0.0
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/scanning_animation.json
