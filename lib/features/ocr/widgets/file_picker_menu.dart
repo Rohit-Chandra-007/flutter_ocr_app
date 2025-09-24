@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import '../../../core/constants/app_constants.dart';
 
 class FilePickerMenu extends StatelessWidget {
-  final Function() onImagePick;
-  final Function() onPdfPick;
+  final VoidCallback onImagePick;
+  final VoidCallback onPdfPick;
 
   const FilePickerMenu({
     super.key,
@@ -15,25 +16,28 @@ class FilePickerMenu extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
+            color: Colors.black.withValues(alpha: 0.1),
             blurRadius: 20,
-            offset: const Offset(0, 10),)
+            offset: const Offset(0, 10),
+          )
         ],
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           _buildOptionButton(
+            context: context,
             icon: Icons.image,
             label: 'Pick Image',
             onTap: onImagePick,
           ),
           const SizedBox(height: 15),
           _buildOptionButton(
+            context: context,
             icon: Icons.picture_as_pdf,
             label: 'Pick PDF',
             onTap: onPdfPick,
@@ -45,18 +49,20 @@ class FilePickerMenu extends StatelessWidget {
   }
 
   Widget _buildOptionButton({
+    required BuildContext context,
     required IconData icon,
     required String label,
-    required Function() onTap,
+    required VoidCallback onTap,
     Color color = Colors.blue,
   }) {
     return InkWell(
       onTap: onTap,
+      borderRadius: BorderRadius.circular(AppConstants.buttonBorderRadius),
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
         decoration: BoxDecoration(
-          color: color.withOpacity(0.1),
-          borderRadius: BorderRadius.circular(15),
+          color: color.withValues(alpha: 0.1),
+          borderRadius: BorderRadius.circular(AppConstants.buttonBorderRadius),
         ),
         child: Row(
           children: [
