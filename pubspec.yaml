@@ -1,5 +1,5 @@
-name: flutter_ocr_app
-description: A Flutter app for extracting text from PDFs and images using Google ML Kit OCR.
+name: scanflow
+description: A beautiful, modern OCR mobile application with seamless user experience.
 publish_to: 'none'
 version: 1.0.0+1
 
@@ -9,32 +9,40 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  # Core OCR Functionality
+  
+  # State Management
+  riverpod: ^2.4.9
+  flutter_riverpod: ^2.4.9
+  
+  # Core OCR & Camera
   google_mlkit_text_recognition: ^0.14.0
-
-  # File Picking
+  camera: ^0.11.0+2
+  
+  # File Handling
   image_picker: ^1.1.2
   file_picker: ^9.0.0
-  #pdf_render: ^1.4.12
-
-  # PDF Handling
   pdfx: ^2.8.0
-  pdf_image_renderer: ^1.0.1
   syncfusion_flutter_pdf: ^28.2.6
-
-  # File System & Paths
+  
+  # Database & Storage (temporarily using shared_preferences)
+  shared_preferences: ^2.2.2
   path_provider: ^2.1.5
   path: ^1.9.1
- 
-  # UI Enhancements
+  
+  # UI & Animations
   flutter_animate: ^4.5.2
-  share_plus: ^7.0.2
-  provider: ^6.1.2
-  shimmer: ^3.0.0
-  image: ^4.5.2
   google_fonts: ^6.2.1
-  cupertino_icons: ^1.0.8
+  shimmer: ^3.0.0
   lottie: ^3.3.1
+  
+  # Utilities
+  share_plus: ^7.0.2
+  permission_handler: ^11.3.1
+  image: ^4.5.2
+  uuid: ^4.4.2
+  intl: ^0.19.0
+  
+  cupertino_icons: ^1.0.8
   
 
 dev_dependencies:
@@ -45,4 +53,6 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
-    - assets/scanning_animation.json
+    - assets/
+    - assets/animations/
+    - assets/icons/

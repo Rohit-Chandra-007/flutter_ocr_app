@@ -1,17 +1,19 @@
 import 'package:flutter/material.dart';
-import '../features/ocr/screens/ocr_screen.dart';
+import '../features/scan_history/screens/home_screen.dart';
 import 'theme/app_theme.dart';
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class ScanFlowApp extends StatelessWidget {
+  const ScanFlowApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Smart OCR Scanner',
+      title: 'ScanFlow',
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
-      home: const OCRScreen(),
+      themeMode: ThemeMode.system,
+      home: const HomeScreen(),
+      debugShowCheckedModeBanner: false,
     );
   }
 }
