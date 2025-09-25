@@ -73,7 +73,7 @@ class _SimpleCameraScreenState extends ConsumerState<SimpleCameraScreen> {
         }
 
         // Create scan document (PDF processing creates temporary image files)
-        final document = ScanDocument(
+        final document = ScanDocument.create(
           title: title,
           extractedText: extractedText,
           imagePaths: [file.path], // Store PDF path for now
@@ -119,7 +119,7 @@ class _SimpleCameraScreenState extends ConsumerState<SimpleCameraScreen> {
       }
 
       // Create scan document
-      final document = ScanDocument(
+      final document = ScanDocument.create(
         title: title,
         extractedText: extractedText,
         imagePaths: imagePaths,

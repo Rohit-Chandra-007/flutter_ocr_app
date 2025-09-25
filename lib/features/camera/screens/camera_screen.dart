@@ -174,7 +174,7 @@ class _CameraScreenState extends ConsumerState<CameraScreen>
       }
 
       // Create scan document
-      final document = ScanDocument(
+      final document = ScanDocument.create(
         title: title,
         extractedText: extractedText,
         imagePaths: [imagePath],

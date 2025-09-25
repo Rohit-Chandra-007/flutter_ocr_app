@@ -29,11 +29,12 @@ class EmptyHistoryState extends StatelessWidget {
                 size: 60,
                 color: AppTheme.primaryBlue,
               ),
-            ).animate(onPlay: (controller) => controller.repeat())
-             .shimmer(duration: 2000.ms, color: AppTheme.accentTeal.withValues(alpha: 0.3))
-             .animate()
+            ).animate()
              .fadeIn(duration: 600.ms)
-             .scale(delay: 200.ms),
+             .scale(delay: 200.ms)
+             .then(delay: 1000.ms)
+             .animate(onPlay: (controller) => controller.repeat(reverse: true))
+             .scaleXY(begin: 1.0, end: 1.05, duration: 2000.ms),
             
             const SizedBox(height: AppTheme.spacing32),
             

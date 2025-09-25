@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:lottie/lottie.dart';
-import '../../../core/constants/app_constants.dart';
+import '../../../app/theme/app_theme.dart';
 
 class ProgressOverlay extends StatelessWidget {
   final double progress;
@@ -20,11 +19,29 @@ class ProgressOverlay extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Lottie.asset(
-              AppConstants.scanningAnimationPath,
-              controller: animationController,
+            SizedBox(
               width: 200,
               height: 200,
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  SizedBox(
+                    width: 120,
+                    height: 120,
+                    child: CircularProgressIndicator(
+                      value: progress > 0 ? progress : null,
+                      strokeWidth: 8,
+                      backgroundColor: Colors.grey[300],
+                      valueColor: const AlwaysStoppedAnimation<Color>(AppTheme.primaryBlue),
+                    ),
+                  ),
+                  Icon(
+                    Icons.document_scanner,
+                    size: 60,
+                    color: AppTheme.primaryBlue.withValues(alpha: 0.7),
+                  ),
+                ],
+              ),
             ),
             const SizedBox(height: 20),
             Text(

@@ -84,7 +84,7 @@ class _ScanOptionsScreenState extends ConsumerState<ScanOptionsScreen> {
         }
 
         // Create scan document
-        final document = ScanDocument(
+        final document = ScanDocument.create(
           title: title,
           extractedText: combinedText,
           imagePaths: imagePaths,
@@ -144,7 +144,7 @@ class _ScanOptionsScreenState extends ConsumerState<ScanOptionsScreen> {
         }
 
         // Create scan document
-        final document = ScanDocument(
+        final document = ScanDocument.create(
           title: title,
           extractedText: extractedText,
           imagePaths: [file.path],
@@ -185,7 +185,7 @@ class _ScanOptionsScreenState extends ConsumerState<ScanOptionsScreen> {
         }
       }
 
-      final document = ScanDocument(
+      final document = ScanDocument.create(
         title: title,
         extractedText: extractedText,
         imagePaths: imagePaths,

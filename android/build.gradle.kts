@@ -16,6 +16,21 @@ subprojects {
     project.evaluationDependsOn(":app")
 }
 
+// android/build.gradle.kts (project-level, Kotlin DSL)
+subprojects {
+  
+    if (project.hasProperty("android")) {
+      val androidExt = project.extensions.findByName("android")
+      if (androidExt is com.android.build.gradle.BaseExtension) {
+        if (androidExt.namespace == null) {
+          androidExt.namespace = project.group.toString()
+        }
+      }
+    }
+  
+}
+
+
 tasks.register<Delete>("clean") {
     delete(rootProject.layout.buildDirectory)
 }

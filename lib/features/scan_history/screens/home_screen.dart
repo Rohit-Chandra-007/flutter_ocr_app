@@ -200,7 +200,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     );
   }
 
-  void _deleteDocument(String id) {
+  void _deleteDocument(int id) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(

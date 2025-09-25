@@ -1,67 +1,57 @@
-import 'dart:convert';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:isar/isar.dart';
+import 'package:path_provider/path_provider.dart';
 import '../models/scan_document.dart';
 
 class DatabaseService {
-  static const String _documentsKey = 'scan_documents';
+  static Isar? _isar;
   
-  // Save a new scan document
+  // Get the Isar instance, initialize if needed
+  static Future<Isar> get isar async {
+    if (_isar != null) return _isar!;
+    
+    final dir = await getApplicationDocumentsDirectory();
+    _isar = await Isar.open(
+      [ScanDocumentSchema],
+      directory: dir.path,
+    );
+    return _isar!;
+  }
+  
+  // Initialize the database (call this in main.dart)
+  static Future<void> initialize() async {
+    await isar; // This will initialize the database
+  }
+
+  // Save or Update a scan document
   static Future<void> saveScanDocument(ScanDocument document) async {
-    final prefs = await SharedPreferences.getInstance();
-    final documents = await getAllScanDocuments();
-    
-    // Remove existing document with same ID if it exists
-    documents.removeWhere((doc) => doc.id == document.id);
-    
-    // Add the new/updated document
-    documents.insert(0, document);
-    
-    // Save to preferences
-    final jsonList = documents.map((doc) => doc.toJson()).toList();
-    await prefs.setString(_documentsKey, jsonEncode(jsonList));
+    final db = await isar;
+    await db.writeTxn(() async {
+      await db.scanDocuments.put(document);
+    });
   }
-  
-  // Get all scan documents ordered by creation date
+
+  // Get all scan documents, sorted by newest first
   static Future<List<ScanDocument>> getAllScanDocuments() async {
-    final prefs = await SharedPreferences.getInstance();
-    final jsonString = prefs.getString(_documentsKey);
-    
-    if (jsonString == null) return [];
-    
-    final jsonList = jsonDecode(jsonString) as List;
-    final documents = jsonList
-        .map((json) => ScanDocument.fromJson(json))
-        .toList();
-    
-    // Sort by creation date (newest first)
-    documents.sort((a, b) => b.createdAt.compareTo(a.createdAt));
-    return documents;
+    final db = await isar;
+    return await db.scanDocuments.where().sortByCreatedAtDesc().findAll();
   }
-  
-  // Update a scan document
-  static Future<void> updateScanDocument(ScanDocument document) async {
-    await saveScanDocument(document); // Same as save for this implementation
+
+  // Delete a scan document by its Id
+  static Future<void> deleteScanDocument(int id) async {
+    final db = await isar;
+    await db.writeTxn(() async {
+      await db.scanDocuments.delete(id);
+    });
   }
-  
-  // Delete a scan document
-  static Future<void> deleteScanDocument(String id) async {
-    final prefs = await SharedPreferences.getInstance();
-    final documents = await getAllScanDocuments();
-    
-    documents.removeWhere((doc) => doc.id == id);
-    
-    final jsonList = documents.map((doc) => doc.toJson()).toList();
-    await prefs.setString(_documentsKey, jsonEncode(jsonList));
-  }
-  
-  // Search scan documents by title or content
+
+  // Search documents using the full-text index
   static Future<List<ScanDocument>> searchScanDocuments(String query) async {
-    final documents = await getAllScanDocuments();
-    final lowercaseQuery = query.toLowerCase();
-    
-    return documents.where((doc) {
-      return doc.title.toLowerCase().contains(lowercaseQuery) ||
-             doc.extractedText.toLowerCase().contains(lowercaseQuery);
-    }).toList();
+    final db = await isar;
+    return await db.scanDocuments
+        .filter()
+        .titleContains(query, caseSensitive: false)
+        .or()
+        .extractedTextContains(query, caseSensitive: false)
+        .findAll();
   }
 }

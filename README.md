@@ -125,9 +125,8 @@ flutter build ios --release
 - **Image Picker**: Gallery integration
 
 ### Storage & Data
-- **SharedPreferences**: Local data persistence
+- **Isar Database**: High-performance local database
 - **Path Provider**: File system access
-- **UUID**: Unique document identifiers
 
 ### UI & Animations
 - **Flutter Animate**: Smooth animations and transitions

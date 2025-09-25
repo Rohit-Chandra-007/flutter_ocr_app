@@ -22,33 +22,34 @@ dependencies:
   image_picker: ^1.1.2
   file_picker: ^9.0.0
   pdfx: ^2.8.0
-  syncfusion_flutter_pdf: ^28.2.6
   
-  # Database & Storage (temporarily using shared_preferences)
-  shared_preferences: ^2.2.2
+  # Database & Storage
+  isar: ^3.1.0+1
+  isar_flutter_libs:
+    path: packages/isar_flutter_libs
   path_provider: ^2.1.5
   path: ^1.9.1
   
   # UI & Animations
   flutter_animate: ^4.5.2
   google_fonts: ^6.2.1
-  shimmer: ^3.0.0
-  lottie: ^3.3.1
   
   # Utilities
   share_plus: ^7.0.2
   permission_handler: ^11.3.1
-  image: ^4.5.2
-  uuid: ^4.4.2
   intl: ^0.19.0
   
   cupertino_icons: ^1.0.8
+  
   
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^2.0.0
+  isar_generator: ^3.1.0+1
+  build_runner: ^2.4.13
+  
 
 flutter:
   uses-material-design: true
