@@ -28,7 +28,7 @@ class _ScanOptionsScreenState extends ConsumerState<ScanOptionsScreen> {
 
       final ImagePicker picker = ImagePicker();
       final XFile? image = await picker.pickImage(source: source);
-      
+
       if (image != null) {
         await _processImageFile(image.path, [image.path]);
       }
@@ -47,25 +47,27 @@ class _ScanOptionsScreenState extends ConsumerState<ScanOptionsScreen> {
         type: FileType.image,
         allowMultiple: true,
       );
-      
+
       if (result != null && result.files.isNotEmpty) {
         final files = result.files.where((file) => file.path != null).toList();
-        
+
         if (files.isEmpty) {
           _showError('No valid images selected');
           return;
         }
-        
+
         // Show processing dialog with progress
-        _showProcessingDialog(showProgress: true, customMessage: 'Processing ${files.length} images...');
-        
+        _showProcessingDialog(
+            showProgress: true,
+            customMessage: 'Processing ${files.length} images...');
+
         String combinedText = '';
         List<String> imagePaths = [];
-        
+
         for (int i = 0; i < files.length; i++) {
           // Update progress
           setState(() => _processingProgress = (i + 1) / files.length);
-          
+
           // Extract text from each image
           final text = await OCRService.extractTextFromImage(files[i].path!);
           if (text.isNotEmpty) {
@@ -73,7 +75,7 @@ class _ScanOptionsScreenState extends ConsumerState<ScanOptionsScreen> {
           }
           imagePaths.add(files[i].path!);
         }
-        
+
         // Create document title from first few words or use default
         String title = 'Multi-page Document (${files.length} pages)';
         if (combinedText.isNotEmpty) {
@@ -98,7 +100,7 @@ class _ScanOptionsScreenState extends ConsumerState<ScanOptionsScreen> {
 
         // Show success and navigate back
         _showSuccess('${files.length} images processed successfully!');
-        
+
         // Navigate back to home after a short delay
         await Future.delayed(const Duration(milliseconds: 1500));
         if (mounted) Navigator.of(context).pop();
@@ -119,12 +121,13 @@ class _ScanOptionsScreenState extends ConsumerState<ScanOptionsScreen> {
         type: FileType.custom,
         allowedExtensions: ['pdf'],
       );
-      
+
       if (result != null && result.files.single.path != null) {
         final file = File(result.files.single.path!);
-        
+
         // Show processing dialog with progress
-        _showProcessingDialog(showProgress: true, customMessage: 'Processing PDF...');
+        _showProcessingDialog(
+            showProgress: true, customMessage: 'Processing PDF...');
 
         // Extract text from PDF with progress callback
         final extractedText = await PDFService.extractTextFromPDF(
@@ -133,7 +136,7 @@ class _ScanOptionsScreenState extends ConsumerState<ScanOptionsScreen> {
             setState(() => _processingProgress = progress);
           },
         );
-        
+
         // Create document title from filename or first few words
         String title = result.files.single.name.replaceAll('.pdf', '');
         if (extractedText.isNotEmpty) {
@@ -158,7 +161,7 @@ class _ScanOptionsScreenState extends ConsumerState<ScanOptionsScreen> {
 
         // Show success and navigate back
         _showSuccess('PDF processed successfully!');
-        
+
         // Navigate back to home after a short delay
         await Future.delayed(const Duration(milliseconds: 1500));
         if (mounted) Navigator.of(context).pop();
@@ -171,12 +174,13 @@ class _ScanOptionsScreenState extends ConsumerState<ScanOptionsScreen> {
     }
   }
 
-  Future<void> _processImageFile(String imagePath, List<String> imagePaths) async {
+  Future<void> _processImageFile(
+      String imagePath, List<String> imagePaths) async {
     try {
       _showProcessingDialog();
 
       final extractedText = await OCRService.extractTextFromImage(imagePath);
-      
+
       String title = 'Scanned Document';
       if (extractedText.isNotEmpty) {
         final words = extractedText.split(' ').take(4).join(' ');
@@ -195,7 +199,7 @@ class _ScanOptionsScreenState extends ConsumerState<ScanOptionsScreen> {
 
       if (mounted) Navigator.of(context).pop();
       _showSuccess('Document scanned successfully!');
-      
+
       await Future.delayed(const Duration(milliseconds: 1500));
       if (mounted) Navigator.of(context).pop();
     } catch (e) {
@@ -204,7 +208,8 @@ class _ScanOptionsScreenState extends ConsumerState<ScanOptionsScreen> {
     }
   }
 
-  void _showProcessingDialog({bool showProgress = false, String? customMessage}) {
+  void _showProcessingDialog(
+      {bool showProgress = false, String? customMessage}) {
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -216,11 +221,13 @@ class _ScanOptionsScreenState extends ConsumerState<ScanOptionsScreen> {
               CircularProgressIndicator(
                 value: _processingProgress > 0 ? _processingProgress : null,
                 backgroundColor: Colors.grey[300],
-                valueColor: const AlwaysStoppedAnimation<Color>(AppTheme.primaryBlue),
+                valueColor:
+                    const AlwaysStoppedAnimation<Color>(AppTheme.primaryBlue),
               ),
               const SizedBox(height: 16),
               Text(
-                customMessage ?? 'Processing... ${(_processingProgress * 100).toInt()}%',
+                customMessage ??
+                    'Processing... ${(_processingProgress * 100).toInt()}%',
                 style: Theme.of(context).textTheme.bodyLarge,
                 textAlign: TextAlign.center,
               ),
@@ -275,21 +282,21 @@ class _ScanOptionsScreenState extends ConsumerState<ScanOptionsScreen> {
               Text(
                 'Choose Scan Method',
                 style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
+                      fontWeight: FontWeight.bold,
+                    ),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 8),
               Text(
                 'Select how you want to scan your document',
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: Colors.grey[600],
-                ),
+                      color: Colors.grey[600],
+                    ),
                 textAlign: TextAlign.center,
               ),
-              
+
               const SizedBox(height: 32),
-              
+
               // Scan options grid
               GridView.count(
                 shrinkWrap: true,
@@ -305,24 +312,24 @@ class _ScanOptionsScreenState extends ConsumerState<ScanOptionsScreen> {
                     title: 'Camera',
                     subtitle: 'Take a photo',
                     color: AppTheme.primaryBlue,
-                    onTap: _isProcessing 
-                        ? null 
+                    onTap: _isProcessing
+                        ? null
                         : () => _pickAndProcessImage(ImageSource.camera),
                     delay: 0,
                   ),
-                  
+
                   // Gallery option
                   _buildScanOption(
                     icon: Icons.photo_library,
                     title: 'Gallery',
                     subtitle: 'Choose image',
                     color: AppTheme.accentTeal,
-                    onTap: _isProcessing 
-                        ? null 
+                    onTap: _isProcessing
+                        ? null
                         : () => _pickAndProcessImage(ImageSource.gallery),
                     delay: 100,
                   ),
-                  
+
                   // PDF option
                   _buildScanOption(
                     icon: Icons.picture_as_pdf,
@@ -332,11 +339,11 @@ class _ScanOptionsScreenState extends ConsumerState<ScanOptionsScreen> {
                     onTap: _isProcessing ? null : _pickAndProcessPDF,
                     delay: 200,
                   ),
-                  
+
                   // Multiple images option - NOW IMPLEMENTED!
                   _buildScanOption(
                     icon: Icons.photo_library_outlined,
-                    title: 'Multiple Images',
+                    title: 'Images',
                     subtitle: 'Batch scan',
                     color: Colors.purple,
                     onTap: _isProcessing ? null : _pickAndProcessMultipleImages,
@@ -344,9 +351,9 @@ class _ScanOptionsScreenState extends ConsumerState<ScanOptionsScreen> {
                   ),
                 ],
               ),
-              
+
               const SizedBox(height: 24),
-              
+
               // Footer info
               Container(
                 padding: const EdgeInsets.all(16),
@@ -366,15 +373,13 @@ class _ScanOptionsScreenState extends ConsumerState<ScanOptionsScreen> {
                       child: Text(
                         'Advanced OCR technology automatically extracts text from your documents',
                         style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: AppTheme.primaryBlue,
-                        ),
+                              color: AppTheme.primaryBlue,
+                            ),
                       ),
                     ),
                   ],
                 ),
-              ).animate()
-               .fadeIn(delay: 600.ms)
-               .slideY(begin: 0.3, end: 0),
+              ).animate().fadeIn(delay: 600.ms).slideY(begin: 0.3, end: 0),
             ],
           ),
         ),
@@ -397,7 +402,9 @@ class _ScanOptionsScreenState extends ConsumerState<ScanOptionsScreen> {
           color: Theme.of(context).cardColor,
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
-            color: onTap != null ? color.withValues(alpha: 0.3) : Colors.grey.withValues(alpha: 0.3),
+            color: onTap != null
+                ? color.withValues(alpha: 0.3)
+                : Colors.grey.withValues(alpha: 0.3),
             width: 1,
           ),
           boxShadow: [
@@ -408,51 +415,55 @@ class _ScanOptionsScreenState extends ConsumerState<ScanOptionsScreen> {
             ),
           ],
         ),
-        child: Stack(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(20),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Container(
-                    width: 60,
-                    height: 60,
-                    decoration: BoxDecoration(
-                      color: (onTap != null ? color : Colors.grey).withValues(alpha: 0.1),
-                      borderRadius: BorderRadius.circular(16),
+        child: Center(
+          child: Stack(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      width: 60,
+                      height: 60,
+                      decoration: BoxDecoration(
+                        color: (onTap != null ? color : Colors.grey)
+                            .withValues(alpha: 0.1),
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      child: Icon(
+                        icon,
+                        size: 32,
+                        color: onTap != null ? color : Colors.grey,
+                      ),
                     ),
-                    child: Icon(
-                      icon,
-                      size: 32,
-                      color: onTap != null ? color : Colors.grey,
+                    const SizedBox(height: 12),
+                    Text(
+                      title,
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                            fontWeight: FontWeight.w600,
+                            color: onTap != null ? null : Colors.grey,
+                          ),
                     ),
-                  ),
-                  const SizedBox(height: 12),
-                  Text(
-                    title,
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.w600,
-                      color: onTap != null ? null : Colors.grey,
+                    const SizedBox(height: 4),
+                    Text(
+                      subtitle,
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                            color:
+                                onTap != null ? Colors.grey[600] : Colors.grey,
+                          ),
+                      textAlign: TextAlign.center,
                     ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    subtitle,
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: onTap != null ? Colors.grey[600] : Colors.grey,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-
-          ],
+            ],
+          ),
         ),
       ),
-    ).animate(delay: Duration(milliseconds: delay))
-     .fadeIn(duration: 400.ms)
-     .slideY(begin: 0.2, end: 0);
+    )
+        .animate(delay: Duration(milliseconds: delay))
+        .fadeIn(duration: 400.ms)
+        .slideY(begin: 0.2, end: 0);
   }
 }

@@ -9,7 +9,7 @@ class EmptyHistoryState extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    
+
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(AppTheme.spacing32),
@@ -29,28 +29,32 @@ class EmptyHistoryState extends StatelessWidget {
                 size: 60,
                 color: AppTheme.primaryBlue,
               ),
-            ).animate()
-             .fadeIn(duration: 600.ms)
-             .scale(delay: 200.ms)
-             .then(delay: 1000.ms)
-             .animate(onPlay: (controller) => controller.repeat(reverse: true))
-             .scaleXY(begin: 1.0, end: 1.05, duration: 2000.ms),
-            
+            )
+                .animate()
+                .fadeIn(duration: 600.ms)
+                .scale(delay: 200.ms)
+                .then(delay: 1000.ms)
+                .animate(
+                    onPlay: (controller) => controller.repeat(reverse: true))
+                .scaleXY(begin: 1.0, end: 1.05, duration: 2000.ms),
+
             const SizedBox(height: AppTheme.spacing32),
-            
+
             // Title
             Text(
               'No Documents Yet',
               style: theme.textTheme.headlineMedium?.copyWith(
                 fontWeight: FontWeight.w600,
-                color: theme.textTheme.headlineMedium?.color?.withValues(alpha: 0.8),
+                color: theme.textTheme.headlineMedium?.color
+                    ?.withValues(alpha: 0.8),
               ),
-            ).animate()
-             .fadeIn(delay: 400.ms, duration: 600.ms)
-             .slideY(begin: 0.3, end: 0),
-            
+            )
+                .animate()
+                .fadeIn(delay: 400.ms, duration: 600.ms)
+                .slideY(begin: 0.3, end: 0),
+
             const SizedBox(height: AppTheme.spacing12),
-            
+
             // Subtitle
             Text(
               'Start scanning documents to build your digital library',
@@ -58,18 +62,20 @@ class EmptyHistoryState extends StatelessWidget {
                 color: theme.textTheme.bodyLarge?.color?.withValues(alpha: 0.6),
               ),
               textAlign: TextAlign.center,
-            ).animate()
-             .fadeIn(delay: 600.ms, duration: 600.ms)
-             .slideY(begin: 0.3, end: 0),
-            
+            )
+                .animate()
+                .fadeIn(delay: 600.ms, duration: 600.ms)
+                .slideY(begin: 0.3, end: 0),
+
             const SizedBox(height: AppTheme.spacing32),
-            
+
             // Call to action
             Container(
               padding: const EdgeInsets.symmetric(
-                horizontal: AppTheme.spacing20,
+                horizontal: AppTheme.spacing16,
                 vertical: AppTheme.spacing12,
               ),
+              height: 56,
               decoration: BoxDecoration(
                 color: AppTheme.accentTeal.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(AppTheme.radiusLarge),
@@ -84,7 +90,7 @@ class EmptyHistoryState extends StatelessWidget {
                   const Icon(
                     Icons.camera_alt,
                     color: AppTheme.accentTeal,
-                    size: 20,
+                    size: 18,
                   ),
                   const SizedBox(width: AppTheme.spacing8),
                   Text(
@@ -96,9 +102,10 @@ class EmptyHistoryState extends StatelessWidget {
                   ),
                 ],
               ),
-            ).animate()
-             .fadeIn(delay: 800.ms, duration: 600.ms)
-             .slideY(begin: 0.3, end: 0),
+            )
+                .animate()
+                .fadeIn(delay: 800.ms, duration: 600.ms)
+                .slideY(begin: 0.3, end: 0),
           ],
         ),
       ),

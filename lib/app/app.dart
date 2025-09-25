@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../features/scan_history/screens/home_screen.dart';
+import '../features/splash/splash.dart';
 import 'theme/app_theme.dart';
 
 class ScanFlowApp extends StatelessWidget {
@@ -12,7 +12,7 @@ class ScanFlowApp extends StatelessWidget {
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
       themeMode: ThemeMode.system,
-      home: const HomeScreen(),
+      home: const SplashNavigationWrapper(),
       debugShowCheckedModeBanner: false,
     );
   }
