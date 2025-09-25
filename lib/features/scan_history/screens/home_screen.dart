@@ -8,7 +8,7 @@ import '../providers/scan_history_provider.dart';
 import '../widgets/scan_history_card.dart';
 import '../widgets/empty_history_state.dart';
 import '../widgets/search_bar.dart';
-import '../../camera/screens/simple_camera_screen.dart';
+import '../../camera/screens/scan_options_screen.dart';
 import '../../document_detail/screens/document_detail_screen.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
@@ -47,7 +47,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     
     Navigator.of(context).push(
       PageRouteBuilder(
-        pageBuilder: (context, animation, secondaryAnimation) => const SimpleCameraScreen(),
+        pageBuilder: (context, animation, secondaryAnimation) => const ScanOptionsScreen(),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           return FadeTransition(
             opacity: animation,

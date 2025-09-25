@@ -21,7 +21,6 @@ class DemoScreen extends ConsumerWidget {
               style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 32),
-            
             ElevatedButton.icon(
               onPressed: () {
                 Navigator.of(context).push(
@@ -33,9 +32,7 @@ class DemoScreen extends ConsumerWidget {
               icon: const Icon(Icons.home),
               label: const Text('View Home Screen'),
             ),
-            
             const SizedBox(height: 16),
-            
             ElevatedButton.icon(
               onPressed: () async {
                 await ref.read(scanHistoryProvider.notifier).loadScanHistory();
@@ -48,9 +45,7 @@ class DemoScreen extends ConsumerWidget {
               icon: const Icon(Icons.refresh),
               label: const Text('Load Sample Data'),
             ),
-            
             const SizedBox(height: 32),
-            
             const Padding(
               padding: EdgeInsets.all(16.0),
               child: Text(
