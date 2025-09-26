@@ -142,31 +142,44 @@ class _ScanHistoryCardState extends State<ScanHistoryCard>
                         const SizedBox(height: AppTheme.spacing8),
                         
                         // Date and page count
-                        Row(
+                        Wrap(
+                          spacing: AppTheme.spacing12,
+                          runSpacing: AppTheme.spacing4,
                           children: [
-                            Icon(
-                              Icons.access_time,
-                              size: 14,
-                              color: theme.textTheme.bodySmall?.color,
+                            Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(
+                                  Icons.access_time,
+                                  size: 14,
+                                  color: theme.textTheme.bodySmall?.color,
+                                ),
+                                const SizedBox(width: AppTheme.spacing4),
+                                Flexible(
+                                  child: Text(
+                                    dateFormat.format(widget.document.createdAt),
+                                    style: theme.textTheme.bodySmall,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                              ],
                             ),
-                            const SizedBox(width: AppTheme.spacing4),
-                            Text(
-                              dateFormat.format(widget.document.createdAt),
-                              style: theme.textTheme.bodySmall,
-                            ),
-                            if (widget.document.pageCount > 1) ...[
-                              const SizedBox(width: AppTheme.spacing12),
-                              Icon(
-                                Icons.description,
-                                size: 14,
-                                color: theme.textTheme.bodySmall?.color,
+                            if (widget.document.pageCount > 1)
+                              Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(
+                                    Icons.description,
+                                    size: 14,
+                                    color: theme.textTheme.bodySmall?.color,
+                                  ),
+                                  const SizedBox(width: AppTheme.spacing4),
+                                  Text(
+                                    '${widget.document.pageCount} pages',
+                                    style: theme.textTheme.bodySmall,
+                                  ),
+                                ],
                               ),
-                              const SizedBox(width: AppTheme.spacing4),
-                              Text(
-                                '${widget.document.pageCount} pages',
-                                style: theme.textTheme.bodySmall,
-                              ),
-                            ],
                           ],
                         ),
                       ],

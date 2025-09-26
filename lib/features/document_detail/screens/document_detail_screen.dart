@@ -9,7 +9,6 @@ import 'dart:io';
 import '../../../app/theme/app_theme.dart';
 import '../../../core/models/scan_document.dart';
 import '../../scan_history/providers/scan_history_provider.dart';
-import '../../settings/widgets/theme_toggle_button.dart';
 
 class DocumentDetailScreen extends ConsumerStatefulWidget {
   final ScanDocument document;
