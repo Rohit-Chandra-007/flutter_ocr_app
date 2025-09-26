@@ -55,28 +55,27 @@ class _SimpleCameraScreenState extends ConsumerState<SimpleCameraScreen> {
         // Show processing dialog with progress
         _showProcessingDialog(showProgress: true);
 
-        // Extract text from PDF with progress callback
-        final extractedText = await PDFService.extractTextFromPDF(
+        // Extract individual pages from PDF with progress callback
+        final pages = await PDFService.extractPagesFromPDF(
           file,
           (progress) {
             setState(() => _processingProgress = progress);
           },
         );
         
-        // Create document title from filename or first few words
+        // Create document title from filename or first page text
         String title = result.files.single.name.replaceAll('.pdf', '');
-        if (extractedText.isNotEmpty) {
-          final words = extractedText.split(' ').take(4).join(' ');
+        if (pages.isNotEmpty && pages.first.extractedText.isNotEmpty) {
+          final words = pages.first.extractedText.split(' ').take(4).join(' ');
           if (words.isNotEmpty && words.length < title.length) {
             title = words.length > 30 ? '${words.substring(0, 30)}...' : words;
           }
         }
 
-        // Create scan document (PDF processing creates temporary image files)
-        final document = ScanDocument.create(
+        // Create scan document using new structure
+        final document = ScanDocument.createFromPages(
           title: title,
-          extractedText: extractedText,
-          imagePaths: [file.path], // Store PDF path for now
+          pages: pages,
         );
 
         // Save to database
@@ -106,23 +105,22 @@ class _SimpleCameraScreenState extends ConsumerState<SimpleCameraScreen> {
       // Show processing dialog
       _showProcessingDialog();
 
-      // Extract text using OCR
-      final extractedText = await OCRService.extractTextFromImage(imagePath);
+      // Process single image with OCR during upload
+      final pages = await OCRService.processMultipleImages([imagePath], null);
       
-      // Create document title from first few words or use default
+      // Create document title from extracted text
       String title = 'Scanned Document';
-      if (extractedText.isNotEmpty) {
-        final words = extractedText.split(' ').take(4).join(' ');
+      if (pages.isNotEmpty && pages.first.extractedText.isNotEmpty) {
+        final words = pages.first.extractedText.split(' ').take(4).join(' ');
         if (words.isNotEmpty) {
           title = words.length > 30 ? '${words.substring(0, 30)}...' : words;
         }
       }
 
-      // Create scan document
-      final document = ScanDocument.create(
+      // Create scan document using new structure
+      final document = ScanDocument.createFromPages(
         title: title,
-        extractedText: extractedText,
-        imagePaths: imagePaths,
+        pages: pages,
       );
 
       // Save to database

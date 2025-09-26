@@ -161,23 +161,22 @@ class _CameraScreenState extends ConsumerState<CameraScreen>
       // Show processing dialog
       _showProcessingDialog();
 
-      // Extract text using OCR
-      final extractedText = await OCRService.extractTextFromImage(imagePath);
+      // Process single image with OCR during upload
+      final pages = await OCRService.processMultipleImages([imagePath], null);
       
-      // Create document title from first few words or use default
+      // Create document title from extracted text
       String title = 'Scanned Document';
-      if (extractedText.isNotEmpty) {
-        final words = extractedText.split(' ').take(4).join(' ');
+      if (pages.isNotEmpty && pages.first.extractedText.isNotEmpty) {
+        final words = pages.first.extractedText.split(' ').take(4).join(' ');
         if (words.isNotEmpty) {
           title = words.length > 30 ? '${words.substring(0, 30)}...' : words;
         }
       }
 
-      // Create scan document
-      final document = ScanDocument.create(
+      // Create scan document using new structure
+      final document = ScanDocument.createFromPages(
         title: title,
-        extractedText: extractedText,
-        imagePaths: [imagePath],
+        pages: pages,
       );
 
       // Save to database

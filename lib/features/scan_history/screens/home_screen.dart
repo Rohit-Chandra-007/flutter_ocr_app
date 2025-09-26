@@ -10,6 +10,8 @@ import '../widgets/empty_history_state.dart';
 import '../widgets/search_bar.dart';
 import '../../camera/screens/scan_options_screen.dart';
 import '../../document_detail/screens/document_detail_screen.dart';
+import '../../settings/widgets/theme_toggle_button.dart';
+import '../../settings/screens/settings_screen.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
@@ -44,10 +46,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     _fabAnimationController.forward().then((_) {
       _fabAnimationController.reverse();
     });
-    
+
     Navigator.of(context).push(
       PageRouteBuilder(
-        pageBuilder: (context, animation, secondaryAnimation) => const ScanOptionsScreen(),
+        pageBuilder: (context, animation, secondaryAnimation) =>
+            const ScanOptionsScreen(),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           return FadeTransition(
             opacity: animation,
@@ -99,6 +102,17 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
               )
             : const Text('ScanFlow'),
         actions: [
+          if (!_isSearching) ...[
+            IconButton(
+              icon: const Icon(Icons.settings),
+              onPressed: () => Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => const SettingsScreen(),
+                ),
+              ),
+              tooltip: 'Settings',
+            ),
+          ],
           IconButton(
             icon: Icon(_isSearching ? Icons.close : Icons.search),
             onPressed: _toggleSearch,
@@ -150,9 +164,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                   document: document,
                   onTap: () => _navigateToDocumentDetail(document),
                   onDelete: () => _deleteDocument(document.id),
-                ).animate(delay: Duration(milliseconds: index * 50))
-                 .fadeIn(duration: 300.ms)
-                 .slideY(begin: 0.1, end: 0);
+                )
+                    .animate(delay: Duration(milliseconds: index * 50))
+                    .fadeIn(duration: 300.ms)
+                    .slideY(begin: 0.1, end: 0);
               },
             ),
           );
@@ -178,7 +193,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
   void _navigateToDocumentDetail(ScanDocument document) {
     Navigator.of(context).push(
       PageRouteBuilder(
-        pageBuilder: (context, animation, secondaryAnimation) => 
+        pageBuilder: (context, animation, secondaryAnimation) =>
             DocumentDetailScreen(document: document),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           return FadeTransition(

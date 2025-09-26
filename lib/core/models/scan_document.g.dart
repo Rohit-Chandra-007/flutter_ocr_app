@@ -37,18 +37,24 @@ const ScanDocumentSchema = CollectionSchema(
       name: r'pageCount',
       type: IsarType.long,
     ),
-    r'previewText': PropertySchema(
+    r'pages': PropertySchema(
       id: 4,
+      name: r'pages',
+      type: IsarType.objectList,
+      target: r'ScanPage',
+    ),
+    r'previewText': PropertySchema(
+      id: 5,
       name: r'previewText',
       type: IsarType.string,
     ),
     r'title': PropertySchema(
-      id: 5,
+      id: 6,
       name: r'title',
       type: IsarType.string,
     ),
     r'updatedAt': PropertySchema(
-      id: 6,
+      id: 7,
       name: r'updatedAt',
       type: IsarType.dateTime,
     )
@@ -100,7 +106,7 @@ const ScanDocumentSchema = CollectionSchema(
     )
   },
   links: {},
-  embeddedSchemas: {},
+  embeddedSchemas: {r'ScanPage': ScanPageSchema},
   getId: _scanDocumentGetId,
   getLinks: _scanDocumentGetLinks,
   attach: _scanDocumentAttach,
@@ -121,6 +127,14 @@ int _scanDocumentEstimateSize(
       bytesCount += value.length * 3;
     }
   }
+  bytesCount += 3 + object.pages.length * 3;
+  {
+    final offsets = allOffsets[ScanPage]!;
+    for (var i = 0; i < object.pages.length; i++) {
+      final value = object.pages[i];
+      bytesCount += ScanPageSchema.estimateSize(value, offsets, allOffsets);
+    }
+  }
   bytesCount += 3 + object.previewText.length * 3;
   bytesCount += 3 + object.title.length * 3;
   return bytesCount;
@@ -136,9 +150,15 @@ void _scanDocumentSerialize(
   writer.writeString(offsets[1], object.extractedText);
   writer.writeStringList(offsets[2], object.imagePaths);
   writer.writeLong(offsets[3], object.pageCount);
-  writer.writeString(offsets[4], object.previewText);
-  writer.writeString(offsets[5], object.title);
-  writer.writeDateTime(offsets[6], object.updatedAt);
+  writer.writeObjectList<ScanPage>(
+    offsets[4],
+    allOffsets,
+    ScanPageSchema.serialize,
+    object.pages,
+  );
+  writer.writeString(offsets[5], object.previewText);
+  writer.writeString(offsets[6], object.title);
+  writer.writeDateTime(offsets[7], object.updatedAt);
 }
 
 ScanDocument _scanDocumentDeserialize(
@@ -153,9 +173,16 @@ ScanDocument _scanDocumentDeserialize(
   object.id = id;
   object.imagePaths = reader.readStringList(offsets[2]) ?? [];
   object.pageCount = reader.readLong(offsets[3]);
-  object.previewText = reader.readString(offsets[4]);
-  object.title = reader.readString(offsets[5]);
-  object.updatedAt = reader.readDateTime(offsets[6]);
+  object.pages = reader.readObjectList<ScanPage>(
+        offsets[4],
+        ScanPageSchema.deserialize,
+        allOffsets,
+        ScanPage(),
+      ) ??
+      [];
+  object.previewText = reader.readString(offsets[5]);
+  object.title = reader.readString(offsets[6]);
+  object.updatedAt = reader.readDateTime(offsets[7]);
   return object;
 }
 
@@ -175,10 +202,18 @@ P _scanDocumentDeserializeProp<P>(
     case 3:
       return (reader.readLong(offset)) as P;
     case 4:
-      return (reader.readString(offset)) as P;
+      return (reader.readObjectList<ScanPage>(
+            offset,
+            ScanPageSchema.deserialize,
+            allOffsets,
+            ScanPage(),
+          ) ??
+          []) as P;
     case 5:
       return (reader.readString(offset)) as P;
     case 6:
+      return (reader.readString(offset)) as P;
+    case 7:
       return (reader.readDateTime(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -1199,6 +1234,95 @@ extension ScanDocumentQueryFilter
   }
 
   QueryBuilder<ScanDocument, ScanDocument, QAfterFilterCondition>
+      pagesLengthEqualTo(int length) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'pages',
+        length,
+        true,
+        length,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<ScanDocument, ScanDocument, QAfterFilterCondition>
+      pagesIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'pages',
+        0,
+        true,
+        0,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<ScanDocument, ScanDocument, QAfterFilterCondition>
+      pagesIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'pages',
+        0,
+        false,
+        999999,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<ScanDocument, ScanDocument, QAfterFilterCondition>
+      pagesLengthLessThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'pages',
+        0,
+        true,
+        length,
+        include,
+      );
+    });
+  }
+
+  QueryBuilder<ScanDocument, ScanDocument, QAfterFilterCondition>
+      pagesLengthGreaterThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'pages',
+        length,
+        include,
+        999999,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<ScanDocument, ScanDocument, QAfterFilterCondition>
+      pagesLengthBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'pages',
+        lower,
+        includeLower,
+        upper,
+        includeUpper,
+      );
+    });
+  }
+
+  QueryBuilder<ScanDocument, ScanDocument, QAfterFilterCondition>
       previewTextEqualTo(
     String value, {
     bool caseSensitive = true,
@@ -1526,7 +1650,14 @@ extension ScanDocumentQueryFilter
 }
 
 extension ScanDocumentQueryObject
-    on QueryBuilder<ScanDocument, ScanDocument, QFilterCondition> {}
+    on QueryBuilder<ScanDocument, ScanDocument, QFilterCondition> {
+  QueryBuilder<ScanDocument, ScanDocument, QAfterFilterCondition> pagesElement(
+      FilterQuery<ScanPage> q) {
+    return QueryBuilder.apply(this, (query) {
+      return query.object(q, r'pages');
+    });
+  }
+}
 
 extension ScanDocumentQueryLinks
     on QueryBuilder<ScanDocument, ScanDocument, QFilterCondition> {}
@@ -1776,6 +1907,12 @@ extension ScanDocumentQueryProperty
   QueryBuilder<ScanDocument, int, QQueryOperations> pageCountProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'pageCount');
+    });
+  }
+
+  QueryBuilder<ScanDocument, List<ScanPage>, QQueryOperations> pagesProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'pages');
     });
   }
 

@@ -61,35 +61,22 @@ class _ScanOptionsScreenState extends ConsumerState<ScanOptionsScreen> {
             showProgress: true,
             customMessage: 'Processing ${files.length} images...');
 
-        String combinedText = '';
-        List<String> imagePaths = [];
+        // Process each image with OCR during upload
+        final imagePaths = files.map((file) => file.path!).toList();
+        final pages = await OCRService.processMultipleImages(
+          imagePaths,
+          (progress) {
+            setState(() => _processingProgress = progress);
+          },
+        );
 
-        for (int i = 0; i < files.length; i++) {
-          // Update progress
-          setState(() => _processingProgress = (i + 1) / files.length);
-
-          // Extract text from each image
-          final text = await OCRService.extractTextFromImage(files[i].path!);
-          if (text.isNotEmpty) {
-            combinedText += '--- Page ${i + 1} ---\n$text\n\n';
-          }
-          imagePaths.add(files[i].path!);
-        }
-
-        // Create document title from first few words or use default
+        // Create document title based on number of pages
         String title = 'Multi-page Document (${files.length} pages)';
-        if (combinedText.isNotEmpty) {
-          final words = combinedText.split(' ').take(4).join(' ');
-          if (words.isNotEmpty) {
-            title = words.length > 30 ? '${words.substring(0, 30)}...' : words;
-          }
-        }
 
-        // Create scan document
-        final document = ScanDocument.create(
+        // Create scan document using new structure
+        final document = ScanDocument.createFromPages(
           title: title,
-          extractedText: combinedText,
-          imagePaths: imagePaths,
+          pages: pages,
         );
 
         // Save to database
@@ -129,28 +116,21 @@ class _ScanOptionsScreenState extends ConsumerState<ScanOptionsScreen> {
         _showProcessingDialog(
             showProgress: true, customMessage: 'Processing PDF...');
 
-        // Extract text from PDF with progress callback
-        final extractedText = await PDFService.extractTextFromPDF(
+        // Extract individual pages from PDF with progress callback
+        final pages = await PDFService.extractPagesFromPDF(
           file,
           (progress) {
             setState(() => _processingProgress = progress);
           },
         );
 
-        // Create document title from filename or first few words
+        // Create document title from filename
         String title = result.files.single.name.replaceAll('.pdf', '');
-        if (extractedText.isNotEmpty) {
-          final words = extractedText.split(' ').take(4).join(' ');
-          if (words.isNotEmpty && words.length < title.length) {
-            title = words.length > 30 ? '${words.substring(0, 30)}...' : words;
-          }
-        }
 
-        // Create scan document
-        final document = ScanDocument.create(
+        // Create scan document using new structure
+        final document = ScanDocument.createFromPages(
           title: title,
-          extractedText: extractedText,
-          imagePaths: [file.path],
+          pages: pages,
         );
 
         // Save to database
@@ -179,20 +159,20 @@ class _ScanOptionsScreenState extends ConsumerState<ScanOptionsScreen> {
     try {
       _showProcessingDialog();
 
-      final extractedText = await OCRService.extractTextFromImage(imagePath);
+      // Process single image with OCR during upload
+      final pages = await OCRService.processMultipleImages([imagePath], null);
 
       String title = 'Scanned Document';
-      if (extractedText.isNotEmpty) {
-        final words = extractedText.split(' ').take(4).join(' ');
+      if (pages.isNotEmpty && pages.first.extractedText.isNotEmpty) {
+        final words = pages.first.extractedText.split(' ').take(4).join(' ');
         if (words.isNotEmpty) {
           title = words.length > 30 ? '${words.substring(0, 30)}...' : words;
         }
       }
 
-      final document = ScanDocument.create(
+      final document = ScanDocument.createFromPages(
         title: title,
-        extractedText: extractedText,
-        imagePaths: imagePaths,
+        pages: pages,
       );
 
       await ref.read(scanHistoryProvider.notifier).addScanDocument(document);

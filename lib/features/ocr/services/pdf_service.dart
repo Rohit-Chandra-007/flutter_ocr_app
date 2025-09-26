@@ -1,15 +1,27 @@
 import 'dart:io';
 import 'package:pdfx/pdfx.dart';
+import 'package:scanflow/features/ocr/services/ocr_service.dart';
 import '../../../core/constants/app_constants.dart';
 import '../../../core/utils/file_utils.dart';
-import 'ocr_service.dart';
+import '../../../core/models/scan_page.dart';
+
 
 class PDFService {
+  // Legacy method for backward compatibility
   static Future<String> extractTextFromPDF(
     File pdfFile, 
     Function(double) onProgress,
   ) async {
-    String extractedText = '';
+    final pages = await extractPagesFromPDF(pdfFile, onProgress);
+    return pages.map((page) => page.extractedText).join('\n\n');
+  }
+  
+  // Extract individual pages from PDF with OCR processing
+  static Future<List<ScanPage>> extractPagesFromPDF(
+    File pdfFile,
+    Function(double) onProgress,
+  ) async {
+    List<ScanPage> pages = [];
     
     try {
       final pdf = await PdfDocument.openFile(pdfFile.path);
@@ -26,9 +38,17 @@ class PDFService {
           final imagePath = await FileUtils.getTempImagePath(i);
           await FileUtils.writeImageBytes(imagePath, pageImage!.bytes);
           
-          final text = await OCRService.extractTextFromImage(imagePath);
-          extractedText += text;
+          // Create page and process OCR immediately
+          final scanPage = ScanPage.create(
+            imagePath: imagePath,
+            pageNumber: i,
+          );
           
+          // Process OCR during upload
+          final text = await OCRService.extractTextFromImage(imagePath);
+          scanPage.updateWithOcrText(text);
+          
+          pages.add(scanPage);
           onProgress(i / totalPages);
         }
         
@@ -36,7 +56,7 @@ class PDFService {
       }
       
       await pdf.close();
-      return extractedText;
+      return pages;
     } catch (e) {
       throw Exception('PDF Processing Error: ${e.toString()}');
     }
