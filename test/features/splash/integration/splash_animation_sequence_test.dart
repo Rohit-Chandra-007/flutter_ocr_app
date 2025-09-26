@@ -126,7 +126,7 @@ void main() {
       await tester.pump();
       
       // Test that animation progresses smoothly by checking at intervals
-      final int steps = 10;
+      const int steps = 10;
       final stepDuration = Duration(milliseconds: SplashAnimationConfig.totalDuration.inMilliseconds ~/ steps);
       
       for (int i = 0; i < steps; i++) {

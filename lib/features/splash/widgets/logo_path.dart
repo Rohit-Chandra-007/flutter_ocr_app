@@ -1,4 +1,3 @@
-import 'dart:math' as math;
 import 'package:flutter/material.dart';
 
 /// Utility class for generating the stylized 'S' logo path and scanner line path

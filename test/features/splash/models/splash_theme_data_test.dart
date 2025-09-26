@@ -24,7 +24,8 @@ void main() {
         expect(themeData.logoColor, const Color(0xFF4A90E2));
         expect(themeData.scannerColor, const Color(0xFF50E3C2));
         expect(themeData.textColor, const Color(0xFF1A1A1A));
-        expect(themeData.glowColor.alpha, (0.2 * 255).round());
+        expect((themeData.glowColor.a * 255.0).round() & 0xff,
+            (0.2 * 255).round());
       });
 
       test('should extract correct colors from dark theme', () {
@@ -46,7 +47,8 @@ void main() {
         expect(themeData.logoColor, const Color(0xFF4A90E2));
         expect(themeData.scannerColor, const Color(0xFF50E3C2));
         expect(themeData.textColor, const Color(0xFFE0E0E0));
-        expect(themeData.glowColor.alpha, (0.3 * 255).round());
+        expect((themeData.glowColor.a * 255.0).round() & 0xff,
+            (0.3 * 255).round());
       });
 
       test('should use different glow opacity for dark vs light themes', () {
@@ -67,8 +69,10 @@ void main() {
         final darkThemeData = SplashThemeData.fromTheme(darkTheme);
 
         // Assert
-        expect(lightThemeData.glowColor.alpha, (0.2 * 255).round());
-        expect(darkThemeData.glowColor.alpha, (0.3 * 255).round());
+        expect((lightThemeData.glowColor.a * 255.0).round() & 0xff,
+            (0.2 * 255).round());
+        expect((darkThemeData.glowColor.a * 255.0).round() & 0xff,
+            (0.3 * 255).round());
       });
     });
 

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:scanflow/features/splash/widgets/app_name_widget.dart';
 import 'package:scanflow/features/splash/controllers/splash_controller.dart';
+import 'package:scanflow/features/splash/models/splash_theme_data.dart';
 import 'package:scanflow/app/theme/app_theme.dart';
 
 void main() {
@@ -22,7 +23,11 @@ void main() {
                 } catch (e) {
                   // Ignore initialization errors for basic test
                 }
-                return AppNameWidget(controller: controller);
+                final themeData = SplashThemeData.fromTheme(Theme.of(context));
+                return AppNameWidget(
+                  controller: controller,
+                  themeData: themeData,
+                );
               },
             ),
           ),
@@ -60,7 +65,11 @@ void main() {
                 } catch (e) {
                   // Ignore initialization errors for basic test
                 }
-                return AppNameWidget(controller: controller);
+                final themeData = SplashThemeData.fromTheme(Theme.of(context));
+                return AppNameWidget(
+                  controller: controller,
+                  themeData: themeData,
+                );
               },
             ),
           ),
@@ -97,7 +106,11 @@ void main() {
                 } catch (e) {
                   // Ignore initialization errors for basic test
                 }
-                return AppNameWidget(controller: controller);
+                final themeData = SplashThemeData.fromTheme(Theme.of(context));
+                return AppNameWidget(
+                  controller: controller,
+                  themeData: themeData,
+                );
               },
             ),
           ),

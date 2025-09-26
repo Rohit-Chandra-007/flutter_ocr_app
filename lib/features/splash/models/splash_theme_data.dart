@@ -17,8 +17,21 @@ class SplashThemeData {
   });
 
   /// Extract appropriate colors from current theme for splash screen
-  factory SplashThemeData.fromTheme(ThemeData theme) {
+  factory SplashThemeData.fromTheme(ThemeData theme, {bool highContrast = false}) {
     final isDark = theme.brightness == Brightness.dark;
+    
+    // Adjust colors for high contrast mode
+    if (highContrast) {
+      return SplashThemeData(
+        backgroundColor: isDark ? Colors.black : Colors.white,
+        logoColor: isDark ? Colors.white : Colors.black,
+        scannerColor: isDark ? Colors.white : Colors.black,
+        textColor: isDark ? Colors.white : Colors.black,
+        glowColor: isDark 
+            ? Colors.white.withValues(alpha: 0.5)
+            : Colors.black.withValues(alpha: 0.5),
+      );
+    }
     
     return SplashThemeData(
       backgroundColor: theme.scaffoldBackgroundColor,
