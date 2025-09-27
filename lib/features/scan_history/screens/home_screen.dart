@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../app/theme/app_theme.dart';
 import '../../../core/models/scan_document.dart';
-import '../providers/scan_history_provider.dart';
-import '../widgets/scan_history_card.dart';
-import '../widgets/empty_history_state.dart';
-import '../widgets/search_bar.dart';
 import '../../camera/screens/scan_options_screen.dart';
 import '../../document_detail/screens/document_detail_screen.dart';
 import '../../settings/screens/settings_screen.dart';
+import '../providers/scan_history_provider.dart';
+import '../widgets/empty_history_state.dart';
+import '../widgets/scan_history_card.dart';
+import '../widgets/search_bar.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
@@ -20,7 +20,7 @@ class HomeScreen extends ConsumerStatefulWidget {
 }
 
 class _HomeScreenState extends ConsumerState<HomeScreen>
-    with TickerProviderStateMixin {
+    with SingleTickerProviderStateMixin {
   late AnimationController _fabAnimationController;
   final TextEditingController _searchController = TextEditingController();
   bool _isSearching = false;
@@ -98,64 +98,78 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
             pinned: true,
             elevation: 0,
             backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-            flexibleSpace: _isSearching ? null : FlexibleSpaceBar(
-              background: Container(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [
-                      AppTheme.primaryBlue.withValues(alpha: 0.1),
-                      AppTheme.accentTeal.withValues(alpha: 0.05),
-                    ],
-                  ),
-                ),
-                child: SafeArea(
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
+            flexibleSpace: _isSearching
+                ? null
+                : FlexibleSpaceBar(
+                    background: Container(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: [
+                            AppTheme.primaryBlue.withValues(alpha: 0.1),
+                            AppTheme.accentTeal.withValues(alpha: 0.05),
+                          ],
+                        ),
+                      ),
+                      child: SafeArea(
+                        child: Padding(
+                          padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
                                 children: [
-                                  Text(
-                                    'ScanFlow',
-                                    style: Theme.of(context).textTheme.headlineLarge?.copyWith(
-                                      fontWeight: FontWeight.bold,
-                                      color: AppTheme.primaryBlue,
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          'ScanFlow',
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .headlineLarge
+                                              ?.copyWith(
+                                                fontWeight: FontWeight.bold,
+                                                color: AppTheme.primaryBlue,
+                                              ),
+                                        ),
+                                        const SizedBox(height: 4),
+                                        Text(
+                                          'Your digital document library',
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodyMedium
+                                              ?.copyWith(
+                                                color: Theme.of(context)
+                                                    .textTheme
+                                                    .bodyMedium
+                                                    ?.color
+                                                    ?.withValues(alpha: 0.7),
+                                              ),
+                                        ),
+                                      ],
                                     ),
                                   ),
-                                  const SizedBox(height: 4),
-                                  Text(
-                                    'Your digital document library',
-                                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                      color: Theme.of(context).textTheme.bodyMedium?.color?.withValues(alpha: 0.7),
+                                  IconButton(
+                                    icon: const Icon(Icons.settings_outlined),
+                                    onPressed: () => Navigator.of(context).push(
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            const SettingsScreen(),
+                                      ),
                                     ),
+                                    tooltip: 'Settings',
                                   ),
                                 ],
                               ),
-                            ),
-                            IconButton(
-                              icon: const Icon(Icons.settings_outlined),
-                              onPressed: () => Navigator.of(context).push(
-                                MaterialPageRoute(
-                                  builder: (context) => const SettingsScreen(),
-                                ),
-                              ),
-                              tooltip: 'Settings',
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
-                      ],
+                      ),
                     ),
                   ),
-                ),
-              ),
-            ),
             title: _isSearching
                 ? CustomSearchBar(
                     controller: _searchController,
@@ -173,8 +187,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
               ),
             ],
           ),
-
-
 
           // Documents List
           scanHistoryAsync.when(
@@ -218,8 +230,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     );
   }
 
-
-
   Widget _buildErrorState(Object error) {
     return Center(
       child: Padding(
@@ -244,20 +254,25 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
             Text(
               'Something went wrong',
               style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                fontWeight: FontWeight.w600,
-              ),
+                    fontWeight: FontWeight.w600,
+                  ),
             ),
             const SizedBox(height: 8),
             Text(
               'Please try again later',
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: Theme.of(context).textTheme.bodyMedium?.color?.withValues(alpha: 0.7),
-              ),
+                    color: Theme.of(context)
+                        .textTheme
+                        .bodyMedium
+                        ?.color
+                        ?.withValues(alpha: 0.7),
+                  ),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 24),
             ElevatedButton.icon(
-              onPressed: () => ref.read(scanHistoryProvider.notifier).loadScanHistory(),
+              onPressed: () =>
+                  ref.read(scanHistoryProvider.notifier).loadScanHistory(),
               icon: const Icon(Icons.refresh),
               label: const Text('Retry'),
             ),

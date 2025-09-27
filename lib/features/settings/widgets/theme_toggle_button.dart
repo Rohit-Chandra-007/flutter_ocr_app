@@ -16,7 +16,6 @@ class ThemeToggleButton extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final themeMode = ref.watch(themeProvider);
-    final themeNotifier = ref.read(themeProvider.notifier);
     
     IconData getIcon() {
       switch (themeMode) {
@@ -71,55 +70,37 @@ class ThemeToggleButton extends ConsumerWidget {
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            RadioListTile<ThemeMode>(
-              title: const Row(
-                children: [
-                  Icon(Icons.light_mode, color: AppTheme.primaryBlue),
-                  SizedBox(width: 12),
-                  Text('Light Mode'),
-                ],
-              ),
-              value: ThemeMode.light,
-              groupValue: currentTheme,
-              onChanged: (value) {
-                if (value != null) {
-                  themeNotifier.setThemeMode(value);
-                  Navigator.pop(context);
-                }
+            ListTile(
+              leading: const Icon(Icons.light_mode, color: AppTheme.primaryBlue),
+              title: const Text('Light Mode'),
+              trailing: currentTheme == ThemeMode.light 
+                ? const Icon(Icons.check, color: AppTheme.primaryBlue)
+                : null,
+              onTap: () {
+                themeNotifier.setThemeMode(ThemeMode.light);
+                Navigator.pop(context);
               },
             ),
-            RadioListTile<ThemeMode>(
-              title: const Row(
-                children: [
-                  Icon(Icons.dark_mode, color: AppTheme.primaryBlue),
-                  SizedBox(width: 12),
-                  Text('Dark Mode'),
-                ],
-              ),
-              value: ThemeMode.dark,
-              groupValue: currentTheme,
-              onChanged: (value) {
-                if (value != null) {
-                  themeNotifier.setThemeMode(value);
-                  Navigator.pop(context);
-                }
+            ListTile(
+              leading: const Icon(Icons.dark_mode, color: AppTheme.primaryBlue),
+              title: const Text('Dark Mode'),
+              trailing: currentTheme == ThemeMode.dark 
+                ? const Icon(Icons.check, color: AppTheme.primaryBlue)
+                : null,
+              onTap: () {
+                themeNotifier.setThemeMode(ThemeMode.dark);
+                Navigator.pop(context);
               },
             ),
-            RadioListTile<ThemeMode>(
-              title: const Row(
-                children: [
-                  Icon(Icons.brightness_auto, color: AppTheme.primaryBlue),
-                  SizedBox(width: 12),
-                  Text('System Default'),
-                ],
-              ),
-              value: ThemeMode.system,
-              groupValue: currentTheme,
-              onChanged: (value) {
-                if (value != null) {
-                  themeNotifier.setThemeMode(value);
-                  Navigator.pop(context);
-                }
+            ListTile(
+              leading: const Icon(Icons.brightness_auto, color: AppTheme.primaryBlue),
+              title: const Text('System Default'),
+              trailing: currentTheme == ThemeMode.system 
+                ? const Icon(Icons.check, color: AppTheme.primaryBlue)
+                : null,
+              onTap: () {
+                themeNotifier.setThemeMode(ThemeMode.system);
+                Navigator.pop(context);
               },
             ),
           ],

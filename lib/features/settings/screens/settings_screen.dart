@@ -25,7 +25,7 @@ class SettingsScreen extends ConsumerWidget {
                   padding: const EdgeInsets.all(AppTheme.spacing16),
                   child: Row(
                     children: [
-                      Icon(
+                      const Icon(
                         Icons.palette,
                         color: AppTheme.primaryBlue,
                         size: 24,
@@ -57,7 +57,7 @@ class SettingsScreen extends ConsumerWidget {
                   padding: const EdgeInsets.all(AppTheme.spacing16),
                   child: Row(
                     children: [
-                      Icon(
+                      const Icon(
                         Icons.info,
                         color: AppTheme.primaryBlue,
                         size: 24,

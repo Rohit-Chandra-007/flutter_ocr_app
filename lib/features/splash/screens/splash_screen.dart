@@ -1,4 +1,5 @@
 import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 /// Simple splash screen that displays app logo and navigates to home
@@ -15,7 +16,7 @@ class SplashScreen extends StatefulWidget {
   State<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen> 
+class _SplashScreenState extends State<SplashScreen>
     with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
@@ -24,7 +25,7 @@ class _SplashScreenState extends State<SplashScreen>
   @override
   void initState() {
     super.initState();
-    
+
     _animationController = AnimationController(
       duration: const Duration(milliseconds: 1500),
       vsync: this,
@@ -53,12 +54,12 @@ class _SplashScreenState extends State<SplashScreen>
   void _startSplashSequence() async {
     // Start the animation
     _animationController.forward();
-    
+
     // Wait for 2 seconds total, then navigate
     await Future.delayed(const Duration(seconds: 2));
-    
+
     if (mounted) {
-      widget.onComplete();
+      widget.onComplete(); // Callback to navigate
     }
   }
 
@@ -71,7 +72,7 @@ class _SplashScreenState extends State<SplashScreen>
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    
+
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
       body: Center(
@@ -99,9 +100,9 @@ class _SplashScreenState extends State<SplashScreen>
                         color: theme.colorScheme.primary,
                       ),
                     ),
-                    
+
                     const SizedBox(height: 32),
-                    
+
                     // App name
                     Text(
                       'ScanFlow',
