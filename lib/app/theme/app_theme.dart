@@ -118,7 +118,7 @@ class AppTheme {
       ),
       floatingActionButtonTheme: const FloatingActionButtonThemeData(
         elevation: 8,
-        backgroundColor: primaryBlue,
+        backgroundColor: Color.fromRGBO(74, 144, 226, 1),
         foregroundColor: Colors.white,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(16)),
