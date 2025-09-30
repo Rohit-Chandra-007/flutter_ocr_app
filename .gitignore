@@ -56,3 +56,6 @@ android/app/upload-keystore.jks
 GEMINI.md
 
 /GEMINI.md
+.vscode/settings.json
+playstore_description.md
+privacy_policy.md

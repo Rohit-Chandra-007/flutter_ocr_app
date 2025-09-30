@@ -1,6 +1,11 @@
-import 'package:isar/isar.dart';
+
+
+import 'package:isar_community/isar.dart';
+
 import 'scan_page.dart';
+
 part 'scan_document.g.dart';
+
 
 @collection
 class ScanDocument {

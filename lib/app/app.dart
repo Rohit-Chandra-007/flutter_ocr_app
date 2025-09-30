@@ -10,14 +10,13 @@ class ScanFlowApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final themeMode = ref.watch(themeProvider);
-    
+
     return MaterialApp(
       title: 'ScanFlow',
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
       themeMode: themeMode,
       home: const SplashNavigationWrapper(),
-      debugShowCheckedModeBanner: false,
     );
   }
 }

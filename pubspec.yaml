@@ -24,9 +24,8 @@ dependencies:
   pdfx: ^2.8.0
   
   # Database & Storage
-  isar: ^3.1.0+1
-  isar_flutter_libs:
-    path: packages/isar_flutter_libs
+  isar_community: 3.3.0-dev.3
+  isar_community_flutter_libs: 3.3.0-dev.3
   path_provider: ^2.1.5
   path: ^1.9.1
   
@@ -42,6 +41,7 @@ dependencies:
   
   cupertino_icons: ^1.0.8
   flutter_launcher_icons: ^0.14.4
+
   
   
 
@@ -49,8 +49,8 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^2.0.0
-  isar_generator: ^3.1.0+1
   build_runner: ^2.4.13
+  isar_community_generator: 3.3.0-dev.3
   
 
 flutter:
