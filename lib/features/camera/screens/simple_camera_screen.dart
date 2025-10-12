@@ -199,7 +199,7 @@ class _SimpleCameraScreenState extends ConsumerState<SimpleCameraScreen> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        icon: Icon(
+        icon: const Icon(
           Icons.warning_amber_rounded,
           color: AppTheme.accentOrange,
           size: 48,
