@@ -14,8 +14,15 @@ class AppConstants {
   static const int pdfRenderWidth = 2000;
   static const int pdfRenderHeight = 3000;
   
+  // OCR Processing Limits
+  static const int maxPagesPerDocument = 25;
+  
   // Messages
   static const String noDocumentSelectedTitle = 'No Document Selected';
   static const String noDocumentSelectedSubtitle = 'Tap the + button to start scanning';
   static const String textCopiedMessage = 'Text copied to clipboard';
+  static const String pageLimitExceededTitle = 'Too Many Pages';
+  static const String pageLimitExceededMessage = 
+      'Maximum 25 pages per document for optimal performance.\n\n'
+      'Please split your document into smaller parts or select fewer pages.';
 }

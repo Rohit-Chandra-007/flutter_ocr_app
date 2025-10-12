@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:pdfx/pdfx.dart';
 import 'dart:io';
 
 import '../../../app/theme/app_theme.dart';
@@ -51,6 +52,12 @@ class _ScanOptionsScreenState extends ConsumerState<ScanOptionsScreen> {
 
         if (files.isEmpty) {
           _showError('No valid images selected');
+          return;
+        }
+
+        // Check page limit
+        if (files.length > AppConstants.maxPagesPerDocument) {
+          _showPageLimitDialog(files.length);
           return;
         }
 
@@ -109,6 +116,17 @@ class _ScanOptionsScreenState extends ConsumerState<ScanOptionsScreen> {
 
       if (result != null && result.files.single.path != null) {
         final file = File(result.files.single.path!);
+
+        // Check PDF page count first (quick check)
+        final pdfDoc = await PdfDocument.openFile(file.path);
+        final pageCount = pdfDoc.pagesCount;
+        await pdfDoc.close();
+
+        // Check page limit
+        if (pageCount > AppConstants.maxPagesPerDocument) {
+          _showPageLimitDialog(pageCount);
+          return;
+        }
 
         // Show processing dialog with progress
         _showProcessingDialog(
@@ -240,6 +258,70 @@ class _ScanOptionsScreenState extends ConsumerState<ScanOptionsScreen> {
         content: Text(message),
         backgroundColor: Colors.green,
         behavior: SnackBarBehavior.floating,
+      ),
+    );
+  }
+
+  void _showPageLimitDialog(int pageCount) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        icon: Icon(
+          Icons.warning_amber_rounded,
+          color: AppTheme.accentOrange,
+          size: 48,
+        ),
+        title: const Text(AppConstants.pageLimitExceededTitle),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'You selected $pageCount pages, but the maximum is ${AppConstants.maxPagesPerDocument} pages per document.',
+              style: Theme.of(context).textTheme.bodyLarge,
+            ),
+            const SizedBox(height: 16),
+            Text(
+              'Suggestions:',
+              style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+            ),
+            const SizedBox(height: 8),
+            _buildSuggestionItem('Split into multiple documents'),
+            _buildSuggestionItem('Select first ${AppConstants.maxPagesPerDocument} pages only'),
+            _buildSuggestionItem('Process in smaller batches'),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('OK'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSuggestionItem(String text) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 4),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Icon(
+            Icons.check_circle_outline,
+            size: 16,
+            color: AppTheme.primaryBlue,
+          ),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              text,
+              style: Theme.of(context).textTheme.bodyMedium,
+            ),
+          ),
+        ],
       ),
     );
   }
