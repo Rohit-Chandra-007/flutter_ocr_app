@@ -45,7 +45,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     _fabAnimationController.forward().then((_) {
       _fabAnimationController.reverse();
     });
-
     Navigator.of(context).push(
       PageRouteBuilder(
         pageBuilder: (context, animation, secondaryAnimation) =>
@@ -216,7 +215,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                       )
                           .animate(delay: Duration(milliseconds: index * 50))
                           .fadeIn(duration: 300.ms)
-                          .slideY(begin: 0.1, end: 0);
+                          .slideX(
+                              begin: 0.1, end: 0, curve: Curves.easeOutCubic);
                     },
                     childCount: documents.length,
                   ),

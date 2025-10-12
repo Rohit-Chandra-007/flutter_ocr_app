@@ -151,6 +151,7 @@ class AppTheme {
         tertiary: accentOrange,
         surface: darkSurface,
         onSurface: darkOnSurface,
+        
       ),
       textTheme: _textTheme.apply(
         bodyColor: darkOnSurface,
