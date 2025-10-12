@@ -215,7 +215,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                       )
                           .animate(delay: Duration(milliseconds: index * 50))
                           .fadeIn(duration: 300.ms)
-                          .slideX(
+                          .slideY(
                               begin: 0.1, end: 0, curve: Curves.easeOutCubic);
                     },
                     childCount: documents.length,
@@ -312,7 +312,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
             opacity: animation,
             child: SlideTransition(
               position: Tween<Offset>(
-                begin: const Offset(0.1, 0.0),
+                begin: const Offset(0.0, 0.1),
                 end: Offset.zero,
               ).animate(CurvedAnimation(
                 parent: animation,

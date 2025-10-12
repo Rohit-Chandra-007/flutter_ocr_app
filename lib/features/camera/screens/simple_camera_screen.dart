@@ -5,9 +5,7 @@ import 'package:file_picker/file_picker.dart';
 import 'dart:io';
 
 import '../../../app/theme/app_theme.dart';
-import '../../../core/models/scan_document.dart';
-import '../../../features/ocr/services/ocr_service.dart';
-import '../../../features/ocr/services/pdf_service.dart';
+import '../../../core/core.dart';
 import '../../scan_history/providers/scan_history_provider.dart';
 
 class SimpleCameraScreen extends ConsumerStatefulWidget {

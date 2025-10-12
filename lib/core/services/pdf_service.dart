@@ -1,10 +1,9 @@
 import 'dart:io';
 import 'package:pdfx/pdfx.dart';
-import 'package:scanflow/features/ocr/services/ocr_service.dart';
-import '../../../core/constants/app_constants.dart';
-import '../../../core/utils/file_utils.dart';
-import '../../../core/models/scan_page.dart';
-
+import '../constants/app_constants.dart';
+import '../utils/file_utils.dart';
+import '../models/scan_page.dart';
+import 'ocr_service.dart';
 
 class PDFService {
   // Legacy method for backward compatibility
