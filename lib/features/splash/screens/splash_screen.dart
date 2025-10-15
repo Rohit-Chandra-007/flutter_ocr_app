@@ -146,7 +146,9 @@ class _SplashScreenState extends State<SplashScreen>
                                 child: ClipRRect(
                                   borderRadius: BorderRadius.circular(32),
                                   child: Image.asset(
-                                    'assets/icons/scanflow_logo.png',
+                                    isDark 
+                                      ? 'assets/icons/scanflow_logo_dark.png'
+                                      : 'assets/icons/scanflow_logo.png',
                                     fit: BoxFit.contain,
                                     errorBuilder: (context, error, stackTrace) {
                                       // Fallback to icon if image not found
@@ -160,7 +162,8 @@ class _SplashScreenState extends State<SplashScreen>
                                               Color(0xFF3B82F6),
                                             ],
                                           ),
-                                          borderRadius: BorderRadius.circular(32),
+                                          borderRadius:
+                                              BorderRadius.circular(32),
                                         ),
                                         child: const Icon(
                                           Icons.document_scanner_rounded,
@@ -177,7 +180,8 @@ class _SplashScreenState extends State<SplashScreen>
 
                               // App name with gradient
                               ShaderMask(
-                                shaderCallback: (bounds) => const LinearGradient(
+                                shaderCallback: (bounds) =>
+                                    const LinearGradient(
                                   colors: [
                                     Color(0xFF1E3A8A),
                                     Color(0xFF3B82F6),
@@ -185,7 +189,8 @@ class _SplashScreenState extends State<SplashScreen>
                                 ).createShader(bounds),
                                 child: Text(
                                   'ScanFlow',
-                                  style: theme.textTheme.displayMedium?.copyWith(
+                                  style:
+                                      theme.textTheme.displayMedium?.copyWith(
                                     fontWeight: FontWeight.bold,
                                     color: Colors.white,
                                     letterSpacing: 1.2,
@@ -199,12 +204,14 @@ class _SplashScreenState extends State<SplashScreen>
                               FadeTransition(
                                 opacity: CurvedAnimation(
                                   parent: _animationController,
-                                  curve: const Interval(0.5, 1.0, curve: Curves.easeIn),
+                                  curve: const Interval(0.5, 1.0,
+                                      curve: Curves.easeIn),
                                 ),
                                 child: Text(
                                   'Scan. Organize. Simplify.',
                                   style: theme.textTheme.bodyLarge?.copyWith(
-                                    color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
+                                    color: theme.colorScheme.onSurface
+                                        .withValues(alpha: 0.6),
                                     letterSpacing: 0.5,
                                   ),
                                 ),

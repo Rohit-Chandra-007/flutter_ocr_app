@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Theme for Android 12+ (API 31+) with new Splash Screen API -->
+    <style name="LaunchTheme" parent="Theme.SplashScreen">
+        <!-- Background color for splash screen -->
+        <item name="android:windowSplashScreenBackground">@color/splash</item>
+        <!-- Icon for splash screen - use launcher icon directly -->
+        <item name="android:windowSplashScreenAnimatedIcon">@mipmap/launcher_icon</item>
+        <!-- Icon background color -->
+        <item name="android:windowSplashScreenIconBackgroundColor">@color/splash</item>
+        <!-- Icon animation duration -->
+        <item name="android:windowSplashScreenAnimationDuration">1000</item>
+        <!-- Post splash screen theme -->
+        <item name="postSplashScreenTheme">@style/NormalTheme</item>
+    </style>
+    
+    <style name="NormalTheme" parent="@android:style/Theme.Light.NoTitleBar">
+        <item name="android:windowBackground">?android:colorBackground</item>
+    </style>
+</resources>

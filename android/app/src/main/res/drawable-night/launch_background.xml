@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Light mode splash screen -->
+<!-- Dark mode splash screen -->
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-    <!-- Light background color -->
+    <!-- Dark background color -->
     <item android:drawable="@color/splash" />
 
     <!-- App logo centered (uses launcher icon) -->

@@ -61,3 +61,8 @@ android {
 flutter {
     source = "../.."
 }
+
+dependencies {
+    // Android 12+ Splash Screen API
+    implementation("androidx.core:core-splashscreen:1.0.1")
+}

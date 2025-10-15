@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Animated icon for Android 12+ splash screen -->
+<animated-vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt">
+    
+    <aapt:attr name="android:drawable">
+        <vector
+            android:width="108dp"
+            android:height="108dp"
+            android:viewportWidth="108"
+            android:viewportHeight="108">
+            
+            <!-- Background circle -->
+            <path
+                android:fillColor="@color/splash"
+                android:pathData="M0,0h108v108h-108z" />
+            
+            <!-- Icon placeholder - will be replaced by launcher icon -->
+            <group
+                android:name="icon_group"
+                android:pivotX="54"
+                android:pivotY="54"
+                android:scaleX="0.6"
+                android:scaleY="0.6">
+                <path
+                    android:fillColor="#3B82F6"
+                    android:pathData="M54,24C37.4,24 24,37.4 24,54s13.4,30 30,30 30,-13.4 30,-30S70.6,24 54,24zM54,78c-13.2,0 -24,-10.8 -24,-24s10.8,-24 24,-24 24,10.8 24,24S67.2,78 54,78z" />
+            </group>
+        </vector>
+    </aapt:attr>
+    
+    <!-- Scale animation -->
+    <target android:name="icon_group">
+        <aapt:attr name="android:animation">
+            <set>
+                <objectAnimator
+                    android:propertyName="scaleX"
+                    android:duration="600"
+                    android:valueFrom="0.5"
+                    android:valueTo="0.6"
+                    android:interpolator="@android:interpolator/overshoot" />
+                <objectAnimator
+                    android:propertyName="scaleY"
+                    android:duration="600"
+                    android:valueFrom="0.5"
+                    android:valueTo="0.6"
+                    android:interpolator="@android:interpolator/overshoot" />
+            </set>
+        </aapt:attr>
+    </target>
+</animated-vector>
