@@ -16,6 +16,13 @@ subprojects {
     project.evaluationDependsOn(":app")
 }
 
+// Suppress Java version warnings from dependencies
+subprojects {
+    tasks.withType<JavaCompile> {
+        options.compilerArgs.add("-Xlint:-options")
+    }
+}
+
 // android/build.gradle.kts (project-level, Kotlin DSL)
 subprojects {
   

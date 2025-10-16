@@ -32,7 +32,7 @@ class _SplashScreenState extends State<SplashScreen>
     super.initState();
 
     _animationController = AnimationController(
-      duration: const Duration(milliseconds: 2000),
+      duration: const Duration(milliseconds: 1000),
       vsync: this,
     );
 
@@ -73,11 +73,19 @@ class _SplashScreenState extends State<SplashScreen>
   }
 
   void _startSplashSequence() async {
-    // Start the animation
+    // Start the animation immediately
     _animationController.forward();
 
-    // Initialize app resources
-    final success = await AppInitializationService.initialize();
+    // Initialize app resources in parallel with animation
+    final initFuture = AppInitializationService.initialize();
+    
+    // Wait for animation to complete (2000ms) and initialization
+    final results = await Future.wait([
+      initFuture,
+      Future.delayed(const Duration(milliseconds: 2000)), // Match animation duration
+    ]);
+    
+    final success = results[0] as bool;
 
     if (!success) {
       // Show error state
@@ -89,9 +97,6 @@ class _SplashScreenState extends State<SplashScreen>
       }
       return;
     }
-
-    // Wait for minimum splash duration (for better UX)
-    await Future.delayed(const Duration(seconds: 2));
 
     if (mounted) {
       widget.onComplete(); // Callback to navigate
@@ -197,9 +202,7 @@ class _SplashScreenState extends State<SplashScreen>
                                   ),
                                 ),
                               ),
-
                               const SizedBox(height: 16),
-
                               // Tagline
                               FadeTransition(
                                 opacity: CurvedAnimation(

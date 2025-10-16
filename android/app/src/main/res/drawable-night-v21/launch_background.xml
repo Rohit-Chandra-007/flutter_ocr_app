@@ -1,13 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Dark mode splash screen for API 21+ -->
+<!-- Dark mode splash for API 21+ - matches Flutter splash exactly -->
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-    <!-- Dark background color -->
-    <item android:drawable="@color/splash" />
-
-    <!-- App logo centered (uses launcher icon) -->
+    <!-- Dark background to match Flutter -->
     <item>
+        <color android:color="#FF0A0E21" />
+    </item>
+
+    <!-- Icon centered, sized to match Flutter (200dp) -->
+    <item
+        android:width="200dp"
+        android:height="200dp"
+        android:gravity="center">
         <bitmap
             android:gravity="center"
-            android:src="@mipmap/launcher_icon" />
+            android:src="@drawable/splash_logo" />
     </item>
 </layer-list>

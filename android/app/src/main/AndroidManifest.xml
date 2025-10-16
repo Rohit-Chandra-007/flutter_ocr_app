@@ -6,7 +6,6 @@
     
     <application
         android:label="ScanFlow"
-        android:name="${applicationName}"
         android:icon="@mipmap/launcher_icon"
         android:allowBackup="true"
         android:supportsRtl="true">
