@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../app/theme/app_theme.dart';
+import '../../../core/theme/app_theme.dart';
 import '../../../core/models/scan_document.dart';
 import '../../camera/screens/scan_options_screen.dart';
 import '../../document_detail/screens/document_detail_screen.dart';
@@ -74,13 +74,17 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
       _isSearching = !_isSearching;
       if (!_isSearching) {
         _searchController.clear();
-        ref.read(scanHistoryProvider.notifier).loadScanHistory();
+        ref.invalidate(scanHistoryProvider);
       }
     });
   }
 
   void _onSearchChanged(String query) {
-    ref.read(scanHistoryProvider.notifier).searchDocuments(query);
+    if (query.isEmpty) {
+      ref.invalidate(scanHistoryProvider);
+    } else {
+      ref.read(scanHistoryProvider.notifier).searchDocuments(query);
+    }
   }
 
   @override
@@ -175,7 +179,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                     onChanged: _onSearchChanged,
                     onClear: () {
                       _searchController.clear();
-                      ref.read(scanHistoryProvider.notifier).loadScanHistory();
+                      ref.invalidate(scanHistoryProvider);
                     },
                   )
                 : null,
@@ -271,8 +275,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
             ),
             const SizedBox(height: 24),
             ElevatedButton.icon(
-              onPressed: () =>
-                  ref.read(scanHistoryProvider.notifier).loadScanHistory(),
+              onPressed: () => ref.invalidate(scanHistoryProvider),
               icon: const Icon(Icons.refresh),
               label: const Text('Retry'),
             ),

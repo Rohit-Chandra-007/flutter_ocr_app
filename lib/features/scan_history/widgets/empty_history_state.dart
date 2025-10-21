@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
-import '../../../app/theme/app_theme.dart';
+import '../../../core/theme/app_theme.dart';
 
 class EmptyHistoryState extends StatelessWidget {
   const EmptyHistoryState({super.key});

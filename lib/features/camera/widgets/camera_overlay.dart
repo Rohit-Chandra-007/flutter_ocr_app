@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../app/theme/app_theme.dart';
+import '../../../core/theme/app_theme.dart';
 
 class CameraOverlay extends StatelessWidget {
   const CameraOverlay({super.key});

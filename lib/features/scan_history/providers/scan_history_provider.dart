@@ -1,75 +1,56 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../../../core/models/scan_document.dart';
 import '../../../core/services/database_service.dart';
 
-final scanHistoryProvider = StateNotifierProvider<ScanHistoryNotifier, AsyncValue<List<ScanDocument>>>((ref) {
-  return ScanHistoryNotifier();
-});
+part 'scan_history_provider.g.dart';
 
-class ScanHistoryNotifier extends StateNotifier<AsyncValue<List<ScanDocument>>> {
-  ScanHistoryNotifier() : super(const AsyncValue.loading()) {
-    loadScanHistory();
+@riverpod
+class ScanHistory extends _$ScanHistory {
+  @override
+  Future<List<ScanDocument>> build() async {
+    return await _loadScanHistory();
   }
-  
-  Future<void> loadScanHistory() async {
-    try {
-      state = const AsyncValue.loading();
-      var documents = await DatabaseService.getAllScanDocuments();
-      
-      // Load sample data if no documents exist
-      // if (documents.isEmpty) {
-      //   final sampleDocs = SampleDataService.getSampleDocuments();
-      //   for (final doc in sampleDocs) {
-      //     await DatabaseService.saveScanDocument(doc);
-      //   }
-      //   documents = await DatabaseService.getAllScanDocuments();
-      // }
-      
-      state = AsyncValue.data(documents);
-    } catch (error, stackTrace) {
-      state = AsyncValue.error(error, stackTrace);
-    }
+
+  Future<List<ScanDocument>> _loadScanHistory() async {
+    final documents = await DatabaseService.getAllScanDocuments();
+
+    // Load sample data if no documents exist
+    // if (documents.isEmpty) {
+    //   final sampleDocs = SampleDataService.getSampleDocuments();
+    //   for (final doc in sampleDocs) {
+    //     await DatabaseService.saveScanDocument(doc);
+    //   }
+    //   return await DatabaseService.getAllScanDocuments();
+    // }
+
+    return documents;
   }
-  
+
   Future<void> addScanDocument(ScanDocument document) async {
-    try {
-      await DatabaseService.saveScanDocument(document);
-      await loadScanHistory(); // Refresh the list
-    } catch (error, stackTrace) {
-      state = AsyncValue.error(error, stackTrace);
-    }
+    await DatabaseService.saveScanDocument(document);
+    ref.invalidateSelf();
   }
-  
+
   Future<void> updateScanDocument(ScanDocument document) async {
-    try {
-      await DatabaseService.saveScanDocument(document); // Save handles both create and update
-      await loadScanHistory(); // Refresh the list
-    } catch (error, stackTrace) {
-      state = AsyncValue.error(error, stackTrace);
-    }
+    await DatabaseService.saveScanDocument(
+        document); // Save handles both create and update
+    ref.invalidateSelf();
   }
-  
+
   Future<void> deleteScanDocument(int id) async {
-    try {
-      await DatabaseService.deleteScanDocument(id);
-      await loadScanHistory(); // Refresh the list
-    } catch (error, stackTrace) {
-      state = AsyncValue.error(error, stackTrace);
-    }
+    await DatabaseService.deleteScanDocument(id);
+    ref.invalidateSelf();
   }
-  
+
   Future<void> searchDocuments(String query) async {
     if (query.isEmpty) {
-      await loadScanHistory();
+      ref.invalidateSelf();
       return;
     }
-    
-    try {
-      state = const AsyncValue.loading();
-      final documents = await DatabaseService.searchScanDocuments(query);
-      state = AsyncValue.data(documents);
-    } catch (error, stackTrace) {
-      state = AsyncValue.error(error, stackTrace);
-    }
+
+    state = const AsyncValue.loading();
+    state = await AsyncValue.guard(() async {
+      return await DatabaseService.searchScanDocuments(query);
+    });
   }
 }

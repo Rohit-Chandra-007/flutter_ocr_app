@@ -6,7 +6,7 @@ import 'package:share_plus/share_plus.dart';
 import 'package:intl/intl.dart';
 import 'dart:io';
 
-import '../../../app/theme/app_theme.dart';
+import '../../../core/theme/app_theme.dart';
 import '../../../core/models/scan_document.dart';
 import '../../scan_history/providers/scan_history_provider.dart';
 
