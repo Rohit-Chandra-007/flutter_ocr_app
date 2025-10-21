@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'theme_viewmodel.dart';
+part of 'theme_provider.dart';
 
 // **************************************************************************
 // RiverpodGenerator
@@ -9,28 +9,28 @@ part of 'theme_viewmodel.dart';
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
 
-@ProviderFor(ThemeViewModel)
-const themeViewModelProvider = ThemeViewModelProvider._();
+@ProviderFor(ThemeNotifier)
+const themeProvider = ThemeNotifierProvider._();
 
-final class ThemeViewModelProvider
-    extends $NotifierProvider<ThemeViewModel, ThemeMode> {
-  const ThemeViewModelProvider._()
+final class ThemeNotifierProvider
+    extends $NotifierProvider<ThemeNotifier, ThemeMode> {
+  const ThemeNotifierProvider._()
       : super(
           from: null,
           argument: null,
           retry: null,
-          name: r'themeViewModelProvider',
+          name: r'themeProvider',
           isAutoDispose: true,
           dependencies: null,
           $allTransitiveDependencies: null,
         );
 
   @override
-  String debugGetCreateSourceHash() => _$themeViewModelHash();
+  String debugGetCreateSourceHash() => _$themeNotifierHash();
 
   @$internal
   @override
-  ThemeViewModel create() => ThemeViewModel();
+  ThemeNotifier create() => ThemeNotifier();
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(ThemeMode value) {
@@ -41,9 +41,9 @@ final class ThemeViewModelProvider
   }
 }
 
-String _$themeViewModelHash() => r'1a632abeec70cddf42d3f203e5eacd4c34be535f';
+String _$themeNotifierHash() => r'156daeb29005804335a7fb42a381b0c6ad8c04ac';
 
-abstract class _$ThemeViewModel extends $Notifier<ThemeMode> {
+abstract class _$ThemeNotifier extends $Notifier<ThemeMode> {
   ThemeMode build();
   @$mustCallSuper
   @override

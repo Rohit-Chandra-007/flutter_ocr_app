@@ -6,7 +6,7 @@ import '../../../core/theme/app_theme.dart';
 import '../../../core/models/scan_document.dart';
 import '../../camera/screens/scan_options_screen.dart';
 import '../../document_detail/screens/document_detail_screen.dart';
-import '../../settings/screens/settings_screen.dart';
+import '../../settings/views/screens/settings_screen.dart';
 import '../providers/scan_history_provider.dart';
 import '../widgets/empty_history_state.dart';
 import '../widgets/scan_history_card.dart';
@@ -92,143 +92,81 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     final scanHistoryAsync = ref.watch(scanHistoryProvider);
 
     return Scaffold(
-      body: CustomScrollView(
-        slivers: [
-          // Custom App Bar with search integration
-          SliverAppBar(
-            expandedHeight: _isSearching ? 0 : 140,
-            floating: false,
-            pinned: true,
-            elevation: 0,
-            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-            flexibleSpace: _isSearching
-                ? null
-                : FlexibleSpaceBar(
-                    background: Container(
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                          colors: [
-                            AppTheme.primaryBlue.withValues(alpha: 0.1),
-                            AppTheme.accentTeal.withValues(alpha: 0.05),
-                          ],
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      appBar: AppBar(
+        elevation: 0,
+        backgroundColor: Colors.transparent,
+        title: _isSearching
+            ? CustomSearchBar(
+                controller: _searchController,
+                onChanged: _onSearchChanged,
+                onClear: () {
+                  _searchController.clear();
+                  ref.invalidate(scanHistoryProvider);
+                },
+              )
+            : Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'ScanFlow',
+                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                          fontWeight: FontWeight.bold,
                         ),
-                      ),
-                      child: SafeArea(
-                        child: Padding(
-                          padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                children: [
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          'ScanFlow',
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .headlineLarge
-                                              ?.copyWith(
-                                                fontWeight: FontWeight.bold,
-                                                color: AppTheme.primaryBlue,
-                                              ),
-                                        ),
-                                        const SizedBox(height: 4),
-                                        Text(
-                                          'Your digital document library',
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .bodyMedium
-                                              ?.copyWith(
-                                                color: Theme.of(context)
-                                                    .textTheme
-                                                    .bodyMedium
-                                                    ?.color
-                                                    ?.withValues(alpha: 0.7),
-                                              ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  IconButton(
-                                    icon: const Icon(Icons.settings_outlined),
-                                    onPressed: () => Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                        builder: (context) =>
-                                            const SettingsScreen(),
-                                      ),
-                                    ),
-                                    tooltip: 'Settings',
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
                   ),
-            title: _isSearching
-                ? CustomSearchBar(
-                    controller: _searchController,
-                    onChanged: _onSearchChanged,
-                    onClear: () {
-                      _searchController.clear();
-                      ref.invalidate(scanHistoryProvider);
-                    },
-                  )
-                : null,
-            actions: [
-              IconButton(
-                icon: Icon(_isSearching ? Icons.close : Icons.search),
-                onPressed: _toggleSearch,
+                  Text(
+                    'Your documents',
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          color: Theme.of(context)
+                              .textTheme
+                              .bodyMedium
+                              ?.color
+                              ?.withValues(alpha: 0.6),
+                        ),
+                  ),
+                ],
               ),
-            ],
+        actions: [
+          IconButton(
+            icon: Icon(_isSearching ? Icons.close : Icons.search_rounded),
+            onPressed: _toggleSearch,
           ),
-
-          // Documents List
-          scanHistoryAsync.when(
-            loading: () => const SliverFillRemaining(
-              child: Center(child: CircularProgressIndicator()),
+          IconButton(
+            icon: const Icon(Icons.settings_outlined),
+            onPressed: () => Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => const SettingsScreen(),
+              ),
             ),
-            error: (error, stack) => SliverFillRemaining(
-              child: _buildErrorState(error),
-            ),
-            data: (documents) {
-              if (documents.isEmpty) {
-                return const SliverFillRemaining(
-                  child: EmptyHistoryState(),
-                );
-              }
-
-              return SliverPadding(
-                padding: const EdgeInsets.fromLTRB(20, 16, 20, 100),
-                sliver: SliverList(
-                  delegate: SliverChildBuilderDelegate(
-                    (context, index) {
-                      final document = documents[index];
-                      return ScanHistoryCard(
-                        document: document,
-                        onTap: () => _navigateToDocumentDetail(document),
-                        onDelete: () => _deleteDocument(document.id),
-                      )
-                          .animate(delay: Duration(milliseconds: index * 50))
-                          .fadeIn(duration: 300.ms)
-                          .slideY(
-                              begin: 0.1, end: 0, curve: Curves.easeOutCubic);
-                    },
-                    childCount: documents.length,
-                  ),
-                ),
-              );
-            },
+            tooltip: 'Settings',
           ),
         ],
+      ),
+      body: scanHistoryAsync.when(
+        loading: () => const Center(child: CircularProgressIndicator()),
+        error: (error, stack) => _buildErrorState(error),
+        data: (documents) {
+          if (documents.isEmpty) {
+            return const EmptyHistoryState();
+          }
+
+          return ListView.separated(
+            padding: const EdgeInsets.fromLTRB(20, 8, 20, 100),
+            itemCount: documents.length,
+            separatorBuilder: (context, index) => const SizedBox(height: 12),
+            itemBuilder: (context, index) {
+              final document = documents[index];
+              return ScanHistoryCard(
+                document: document,
+                onTap: () => _navigateToDocumentDetail(document),
+                onDelete: () => _deleteDocument(document.id),
+              )
+                  .animate(delay: Duration(milliseconds: index * 50))
+                  .fadeIn(duration: 300.ms)
+                  .slideY(begin: 0.1, end: 0, curve: Curves.easeOutCubic);
+            },
+          );
+        },
       ),
       floatingActionButton: _buildFloatingActionButton(),
     );
@@ -237,27 +175,26 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
   Widget _buildErrorState(Object error) {
     return Center(
       child: Padding(
-        padding: const EdgeInsets.all(32),
+        padding: const EdgeInsets.all(40),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Container(
-              width: 80,
-              height: 80,
+              padding: const EdgeInsets.all(24),
               decoration: BoxDecoration(
                 color: Colors.red.withValues(alpha: 0.1),
-                shape: BoxShape.circle,
+                borderRadius: BorderRadius.circular(20),
               ),
               child: const Icon(
-                Icons.error_outline,
-                size: 40,
+                Icons.error_outline_rounded,
+                size: 48,
                 color: Colors.red,
               ),
             ),
             const SizedBox(height: 24),
             Text(
               'Something went wrong',
-              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+              style: Theme.of(context).textTheme.titleLarge?.copyWith(
                     fontWeight: FontWeight.w600,
                   ),
             ),
@@ -269,15 +206,21 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                         .textTheme
                         .bodyMedium
                         ?.color
-                        ?.withValues(alpha: 0.7),
+                        ?.withValues(alpha: 0.6),
                   ),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 24),
             ElevatedButton.icon(
               onPressed: () => ref.invalidate(scanHistoryProvider),
-              icon: const Icon(Icons.refresh),
+              icon: const Icon(Icons.refresh_rounded),
               label: const Text('Retry'),
+              style: ElevatedButton.styleFrom(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 24,
+                  vertical: 12,
+                ),
+              ),
             ),
           ],
         ),
@@ -286,22 +229,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
   }
 
   Widget _buildFloatingActionButton() {
-    return ScaleTransition(
-      scale: Tween<double>(begin: 1.0, end: 1.1).animate(
-        CurvedAnimation(
-          parent: _fabAnimationController,
-          curve: Curves.easeInOut,
-        ),
-      ),
-      child: FloatingActionButton.extended(
-        onPressed: _onFabPressed,
-        icon: const Icon(Icons.add),
-        label: const Text('Scan Document'),
-        heroTag: 'scan_fab',
-        elevation: 8,
-        backgroundColor: AppTheme.primaryBlue,
-        foregroundColor: Colors.white,
-      ),
+    return FloatingActionButton.extended(
+      onPressed: _onFabPressed,
+      icon: const Icon(Icons.document_scanner_rounded),
+      label: const Text('Scan'),
+      heroTag: 'scan_fab',
+      elevation: 4,
+      backgroundColor: AppTheme.primaryBlue,
+      foregroundColor: Colors.white,
     );
   }
 
@@ -334,8 +269,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+        ),
         title: const Text('Delete Document'),
-        content: const Text('Are you sure you want to delete this document?'),
+        content: const Text(
+            'Are you sure you want to delete this document? This action cannot be undone.'),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
@@ -346,6 +285,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
               Navigator.of(context).pop();
               ref.read(scanHistoryProvider.notifier).deleteScanDocument(id);
             },
+            style: TextButton.styleFrom(
+              foregroundColor: Colors.red,
+            ),
             child: const Text('Delete'),
           ),
         ],
