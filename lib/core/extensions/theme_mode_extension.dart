@@ -23,5 +23,7 @@ extension ThemeModeExtension on ThemeMode {
     }
   }
 
-  static List<ThemeMode> get all => ThemeMode.values;
+  static List<ThemeMode> get all {
+    return ThemeMode.values;
+  }
 }

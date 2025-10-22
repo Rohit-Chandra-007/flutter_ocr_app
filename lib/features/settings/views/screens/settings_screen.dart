@@ -18,10 +18,7 @@ class SettingsScreen extends StatelessWidget {
         ),
         title: const Text('Settings'),
       ),
-      body: const SingleChildScrollView(
-        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-        child: SettingsView(),
-      ).animate().fadeIn(duration: 300.ms),
+      body: const SettingsView().animate().fadeIn(duration: 300.ms),
     );
   }
 }
