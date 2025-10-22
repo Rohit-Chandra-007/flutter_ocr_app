@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../core/theme/app_theme.dart';
-import '../../../core/models/scan_document.dart';
-import '../../camera/screens/scan_options_screen.dart';
-import '../../document_detail/screens/document_detail_screen.dart';
-import '../../settings/views/screens/settings_screen.dart';
-import '../providers/scan_history_provider.dart';
+import '../../../../core/theme/app_theme.dart';
+import '../../../../core/models/scan_document.dart';
+import '../../../camera/screens/scan_options_screen.dart';
+import '../../../document_detail/screens/document_detail_screen.dart';
+import '../../../settings/views/screens/settings_screen.dart';
+import '../../viewmodels/scan_history_provider.dart';
 import '../widgets/empty_history_state.dart';
 import '../widgets/scan_history_card.dart';
 import '../widgets/search_bar.dart';

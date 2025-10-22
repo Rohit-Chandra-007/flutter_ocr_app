@@ -7,7 +7,7 @@ import 'package:permission_handler/permission_handler.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../core/core.dart';
-import '../../scan_history/providers/scan_history_provider.dart';
+import '../../home/viewmodels/scan_history_provider.dart';
 import '../widgets/capture_button.dart';
 import '../widgets/camera_overlay.dart';
 

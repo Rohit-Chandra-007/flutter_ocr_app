@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../screens/splash_screen.dart';
-import '../../scan_history/screens/home_screen.dart';
+import '../../home/views/screens/home_screen.dart';
 
 /// Simple navigation wrapper that shows splash then navigates to home
 class SplashNavigationWrapper extends StatefulWidget {

@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'dart:io';
 
-import '../../../core/theme/app_theme.dart';
-import '../../../core/models/scan_document.dart';
+import '../../../../core/theme/app_theme.dart';
+import '../../../../core/models/scan_document.dart';
 
 class ScanHistoryCard extends StatefulWidget {
   final ScanDocument document;

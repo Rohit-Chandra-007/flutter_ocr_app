@@ -7,7 +7,7 @@ import 'dart:io';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../core/core.dart';
-import '../../scan_history/providers/scan_history_provider.dart';
+import '../../home/viewmodels/scan_history_provider.dart';
 
 class SimpleCameraScreen extends ConsumerStatefulWidget {
   const SimpleCameraScreen({super.key});
