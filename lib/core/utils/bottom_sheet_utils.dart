@@ -9,7 +9,8 @@ class BottomSheetUtils {
 
   static void showThemeDialog(BuildContext context, WidgetRef ref) {
     final notifier = ref.read(themeProvider.notifier);
-    final currentTheme = ref.read(themeProvider);
+    final currentThemeAsync = ref.read(themeProvider);
+    final currentTheme = currentThemeAsync.value ?? ThemeMode.system;
 
     showModalBottomSheet(
       context: context,

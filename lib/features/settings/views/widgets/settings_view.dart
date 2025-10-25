@@ -7,15 +7,15 @@ import 'package:scanflow/core/widgets/app_info_card.dart';
 import 'package:scanflow/features/settings/views/widgets/setting_tile.dart';
 
 import '../../../../core/extensions/theme_mode_extension.dart';
-import '../../../../core/providers/theme_provider.dart';
 import '../../../../core/theme/app_theme.dart';
+import '../../viewmodels/settings_provider.dart';
 
 class SettingsView extends ConsumerWidget {
   const SettingsView({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final currentTheme = ref.watch(themeProvider);
+    final settingsState = ref.watch(settingsProvider);
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Padding(
@@ -28,10 +28,10 @@ class SettingsView extends ConsumerWidget {
 
           // Theme Setting
           SettingTile(
-            icon: currentTheme.icon,
+            icon: settingsState.themeMode.icon,
             iconColor: AppTheme.primaryBlue,
             title: 'Theme',
-            subtitle: currentTheme.label,
+            subtitle: settingsState.themeMode.label,
             onTap: () => BottomSheetUtils.showThemeDialog(context, ref),
           ),
 
@@ -52,7 +52,7 @@ class SettingsView extends ConsumerWidget {
             icon: Icons.info_outline_rounded,
             iconColor: AppTheme.accentTeal,
             title: 'About',
-            subtitle: 'Version ${AppConstants.kAppVersion}',
+            subtitle: 'Version ${settingsState.appVersion}',
             onTap: () => SnackbarUtils.showAboutDialog(context),
           ),
 

@@ -18,7 +18,7 @@ class SettingsScreen extends StatelessWidget {
         ),
         title: const Text('Settings'),
       ),
-      body: const SettingsView().animate().fadeIn(duration: 300.ms),
+      body: const SettingsView(),
     );
   }
 }

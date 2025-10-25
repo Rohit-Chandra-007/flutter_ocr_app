@@ -1,25 +1,37 @@
 import 'package:flutter/material.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../services/theme_service.dart';
+
 part 'theme_provider.g.dart';
 
 @riverpod
 class ThemeNotifier extends _$ThemeNotifier {
+  final _themeService = ThemeService();
+
   @override
-  ThemeMode build() => ThemeMode.system;
+  Future<ThemeMode> build() async {
+    return await _themeService.getThemeMode();
+  }
 
-  void setThemeMode(ThemeMode mode) => state = mode;
+  Future<void> setThemeMode(ThemeMode mode) async {
+    await _themeService.saveThemeMode(mode);
+    state = AsyncValue.data(mode);
+  }
 
-  void toggleTheme([ThemeMode? mode]) {
+  Future<void> toggleTheme([ThemeMode? mode]) async {
     if (mode != null) {
-      state = mode;
+      await setThemeMode(mode);
       return;
     }
 
-    state = switch (state) {
+    final currentMode = state.value ?? ThemeMode.system;
+    final newMode = switch (currentMode) {
       ThemeMode.light => ThemeMode.dark,
       ThemeMode.dark => ThemeMode.light,
       ThemeMode.system => ThemeMode.light,
     };
+    
+    await setThemeMode(newMode);
   }
 }
