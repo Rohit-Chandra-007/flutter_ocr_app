@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/models/scan_document.dart';
+import '../../../../core/utils/navigation_utils.dart';
 import '../../../camera/screens/scan_options_screen.dart';
 import '../../../document_detail/screens/document_detail_screen.dart';
 import '../../../settings/views/screens/settings_screen.dart';
@@ -45,27 +46,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     _fabAnimationController.forward().then((_) {
       _fabAnimationController.reverse();
     });
-    Navigator.of(context).push(
-      PageRouteBuilder(
-        pageBuilder: (context, animation, secondaryAnimation) =>
-            const ScanOptionsScreen(),
-        transitionsBuilder: (context, animation, secondaryAnimation, child) {
-          return FadeTransition(
-            opacity: animation,
-            child: SlideTransition(
-              position: Tween<Offset>(
-                begin: const Offset(0.0, 0.1),
-                end: Offset.zero,
-              ).animate(CurvedAnimation(
-                parent: animation,
-                curve: Curves.easeOutCubic,
-              )),
-              child: child,
-            ),
-          );
-        },
-        transitionDuration: const Duration(milliseconds: 300),
-      ),
+    NavigationUtils.navigateWithFadeSlide(
+      context,
+      const ScanOptionsScreen(),
     );
   }
 
@@ -133,10 +116,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
           ),
           IconButton(
             icon: const Icon(Icons.settings_outlined),
-            onPressed: () => Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) => const SettingsScreen(),
-              ),
+            onPressed: () => NavigationUtils.navigateWithFadeSlide(
+              context,
+              const SettingsScreen(),
             ),
             tooltip: 'Settings',
           ),
@@ -241,27 +223,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
   }
 
   void _navigateToDocumentDetail(ScanDocument document) {
-    Navigator.of(context).push(
-      PageRouteBuilder(
-        pageBuilder: (context, animation, secondaryAnimation) =>
-            DocumentDetailScreen(document: document),
-        transitionsBuilder: (context, animation, secondaryAnimation, child) {
-          return FadeTransition(
-            opacity: animation,
-            child: SlideTransition(
-              position: Tween<Offset>(
-                begin: const Offset(0.0, 0.1),
-                end: Offset.zero,
-              ).animate(CurvedAnimation(
-                parent: animation,
-                curve: Curves.easeOutCubic,
-              )),
-              child: child,
-            ),
-          );
-        },
-        transitionDuration: const Duration(milliseconds: 300),
-      ),
+    NavigationUtils.navigateWithFadeSlide(
+      context,
+      DocumentDetailScreen(document: document),
     );
   }
 
