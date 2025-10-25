@@ -5,9 +5,9 @@ import 'package:file_picker/file_picker.dart';
 import 'package:pdfx/pdfx.dart';
 import 'dart:io';
 
-import '../../../app/theme/app_theme.dart';
+import '../../../core/theme/app_theme.dart';
 import '../../../core/core.dart';
-import '../../scan_history/providers/scan_history_provider.dart';
+import '../../home/viewmodels/scan_history_provider.dart';
 
 class SimpleCameraScreen extends ConsumerStatefulWidget {
   const SimpleCameraScreen({super.key});
