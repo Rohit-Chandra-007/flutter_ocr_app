@@ -6,10 +6,10 @@ class AppInitializationService {
   static bool _isInitialized = false;
   static String? _initializationError;
 
-  /// Check if app initialization is complete
+  
   static bool get isInitialized => _isInitialized;
 
-  /// Get initialization error if any occurred
+  
   static String? get initializationError => _initializationError;
 
   /// Initialize all app resources

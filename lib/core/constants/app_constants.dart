@@ -37,4 +37,15 @@ class AppConstants {
   static const String pageLimitExceededMessage =
       'Maximum 25 pages per document for optimal performance.\n\n'
       'Please split your document into smaller parts or select fewer pages.';
+
+  /// Common animation durations used across the app so screens stay in sync.
+  static const Duration quick = Duration(milliseconds: 150);
+  static const Duration regular = Duration(milliseconds: 300);
+  static const Duration relaxed = Duration(milliseconds: 600);
+
+  /// Length of the splash intro animation.
+  static const Duration splashIntro = Duration(milliseconds: 1000);
+
+  /// Total splash hold before navigation to keep sequencing consistent.
+  static const Duration splashSequence = Duration(milliseconds: 2000);
 }
