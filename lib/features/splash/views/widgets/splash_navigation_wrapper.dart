@@ -1,17 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scanflow/features/home/views/screens/home_screen.dart';
 import '../screens/splash_screen.dart';
 
-
-/// Simple navigation wrapper that shows splash then navigates to home
-class SplashNavigationWrapper extends StatefulWidget {
+/// Navigation wrapper that shows splash then navigates to home
+class SplashNavigationWrapper extends ConsumerStatefulWidget {
   const SplashNavigationWrapper({super.key});
 
   @override
-  State<SplashNavigationWrapper> createState() => _SplashNavigationWrapperState();
+  ConsumerState<SplashNavigationWrapper> createState() =>
+      _SplashNavigationWrapperState();
 }
 
-class _SplashNavigationWrapperState extends State<SplashNavigationWrapper> {
+class _SplashNavigationWrapperState
+    extends ConsumerState<SplashNavigationWrapper> {
   bool _showSplash = true;
 
   void _onSplashComplete() {
