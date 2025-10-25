@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Dark mode splash - matches Flutter splash exactly -->
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-    <!-- Dark background to match Flutter -->
-    <item>
-        <color android:color="#FF0A0E21" />
-    </item>
+   
+    <item android:drawable="@color/splash" />
 
     <!-- Icon centered, sized to match Flutter (200dp) -->
     <item
@@ -13,6 +11,6 @@
         android:gravity="center">
         <bitmap
             android:gravity="center"
-            android:src="@drawable/splash_logo" />
+            android:src="@mipmap/launcher_icon" />
     </item>
 </layer-list>

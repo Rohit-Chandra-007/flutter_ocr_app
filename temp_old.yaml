@@ -1,0 +1,64 @@
+name: scanflow
+description: A beautiful, modern OCR mobile application with seamless user experience.
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  
+  # State Management
+  flutter_riverpod: ^3.0.3
+  riverpod_annotation: ^3.0.3
+  
+  # Core OCR & Camera
+  google_mlkit_text_recognition: ^0.15.0
+  camera: ^0.11.0+2
+  
+  # File Handling
+  image_picker: ^1.2.0
+  file_picker: ^10.3.3
+  pdfx: ^2.9.2
+  
+  # Database & Storage
+  isar_community: 3.3.0-dev.3
+  isar_community_flutter_libs: 3.3.0-dev.3
+  path_provider: ^2.1.5
+  path: ^1.9.1
+  
+  # UI & Animations
+  flutter_animate: ^4.5.2
+  google_fonts: ^6.2.1
+  
+  # Utilities
+  share_plus: ^7.0.2
+  permission_handler: ^11.3.1
+  intl: ^0.19.0
+  shared_preferences: ^2.2.2
+  
+  cupertino_icons: ^1.0.8
+  flutter_launcher_icons: ^0.14.4
+ 
+
+  
+  
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^2.0.0
+  build_runner: ^2.4.13
+  riverpod_generator: ^3.0.3
+  custom_lint: ^0.8.0
+  riverpod_lint: ^3.0.3
+  isar_community_generator: 3.3.0-dev.3
+  
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/
+    - assets/icons/

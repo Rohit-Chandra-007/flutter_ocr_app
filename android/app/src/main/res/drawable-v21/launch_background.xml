@@ -3,12 +3,13 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:drawable="@color/splash" />
 
-   
-    <item>
+    <!-- Icon centered, sized to match Flutter (200dp) -->
+    <item
+        android:width="200dp"
+        android:height="200dp"
+        android:gravity="center">
         <bitmap
             android:gravity="center"
-            android:scaleWidth="150%"
-            android:scaleHeight="150%"
             android:src="@mipmap/launcher_icon" />
     </item>
 </layer-list>

@@ -11,6 +11,9 @@ flutter_launcher_icons:
   adaptive_icon_background: "#FFFFFF"
   adaptive_icon_foreground: "assets/icons/scanflow_logo.png"
   
+  # Dark mode background for Android adaptive icon
+  adaptive_icon_background_dark: "#FFFFFF"
+  
   # Monochrome icon for Android 13+ themed icons
   adaptive_icon_monochrome: "assets/icons/scanflow_logo.png"
   
