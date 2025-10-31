@@ -1,0 +1,52 @@
+import 'package:flutter/material.dart';
+
+import '../../../../core/theme/app_theme.dart';
+
+class CameraCaptureButton extends StatelessWidget {
+  final VoidCallback onPressed;
+  final bool isCapturing;
+
+  const CameraCaptureButton({
+    super.key,
+    required this.onPressed,
+    required this.isCapturing,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: isCapturing ? null : onPressed,
+      child: Container(
+        width: 80,
+        height: 80,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: Colors.white,
+          border: Border.all(
+            color: isCapturing ? AppTheme.accentOrange : AppTheme.primaryBlue,
+            width: 4,
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.3),
+              blurRadius: 10,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: isCapturing
+            ? const Center(
+                child: CircularProgressIndicator(
+                  color: AppTheme.accentOrange,
+                  strokeWidth: 3,
+                ),
+              )
+            : const Icon(
+                Icons.camera_alt,
+                color: AppTheme.primaryBlue,
+                size: 32,
+              ),
+      ),
+    );
+  }
+}

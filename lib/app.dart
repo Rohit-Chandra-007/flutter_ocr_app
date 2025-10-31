@@ -9,34 +9,18 @@ class ScanFlowApp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final themeModeAsync = ref.watch(themeProvider);
+    final themeMode = ref.watch(themeProvider).when(
+      data: (mode) => mode,
+      loading: () => ThemeMode.system,
+      error: (_, __) => ThemeMode.system,
+    );
 
-    return themeModeAsync.when(
-      data: (themeMode) => MaterialApp(
-        title: 'ScanFlow',
-        theme: AppTheme.lightTheme,
-        darkTheme: AppTheme.darkTheme,
-        themeMode: themeMode,
-        home: const SplashNavigationWrapper(),
-      ),
-      loading: () => MaterialApp(
-        title: 'ScanFlow',
-        theme: AppTheme.lightTheme,
-        darkTheme: AppTheme.darkTheme,
-        themeMode: ThemeMode.system,
-        home: const Scaffold(
-          body: Center(
-            child: CircularProgressIndicator(),
-          ),
-        ),
-      ),
-      error: (_, __) => MaterialApp(
-        title: 'ScanFlow',
-        theme: AppTheme.lightTheme,
-        darkTheme: AppTheme.darkTheme,
-        themeMode: ThemeMode.system,
-        home: const SplashNavigationWrapper(),
-      ),
+    return MaterialApp(
+      title: 'ScanFlow',
+      theme: AppTheme.lightTheme,
+      darkTheme: AppTheme.darkTheme,
+      themeMode: themeMode,
+      home: const SplashNavigationWrapper(),
     );
   }
 }

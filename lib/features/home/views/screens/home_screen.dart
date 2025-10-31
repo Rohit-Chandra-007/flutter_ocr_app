@@ -5,7 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/models/scan_document.dart';
 import '../../../../core/utils/navigation_utils.dart';
-import '../../../camera/screens/scan_options_screen.dart';
+import '../../../document_scanner/views/screens/scan_options_screen.dart';
 import '../../../document_detail/screens/document_detail_screen.dart';
 import '../../../settings/views/screens/settings_screen.dart';
 import '../../viewmodels/scan_history_provider.dart';

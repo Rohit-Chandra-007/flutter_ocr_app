@@ -3,9 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../animations/splash_animations.dart';
 import '../../viewmodels/splash_provider.dart';
 import '../widgets/splash_logo.dart';
-import '../widgets/splash_error_view.dart';
 
-/// Splash screen with initialization logic
+/// Splash screen with logo animation
 class SplashScreen extends ConsumerStatefulWidget {
   final VoidCallback onComplete;
 
@@ -37,13 +36,11 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
-    final splashState = ref.watch(splashProvider);
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
-    // Trigger navigation when initialization completes
+    // Navigate when splash completes
     ref.listen(splashProvider, (previous, next) {
-      if (!next.isLoading && !next.hasError) {
+      if (!next.isLoading) {
         widget.onComplete();
       }
     });
@@ -51,15 +48,10 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
     return Scaffold(
       backgroundColor: isDark ? const Color(0xFF0A0E21) : Colors.white,
       body: Center(
-        child: splashState.hasError
-            ? SplashErrorView(
-                message: splashState.errorMessage,
-                onRetry: () => ref.read(splashProvider.notifier).retry(),
-              )
-            : SplashLogo(
-                animations: _animations,
-                isDark: isDark,
-              ),
+        child: SplashLogo(
+          animations: _animations,
+          isDark: isDark,
+        ),
       ),
     );
   }
