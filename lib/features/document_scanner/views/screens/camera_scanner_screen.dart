@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logger/logger.dart';
 import '../../viewmodels/camera_scanner_provider.dart';
 import '../../viewmodels/document_processor_provider.dart';
+import '../../models/scanner_state.dart';
 import '../widgets/camera_preview_view.dart';
 import '../../../../core/widgets/error_widget.dart';
 import '../widgets/camera_loading_view.dart';
@@ -166,7 +167,7 @@ class _CameraScannerScreenState extends ConsumerState<CameraScannerScreen> {
     );
   }
 
-  Widget _buildBody(scannerState, notifier) {
+  Widget _buildBody(ScannerState scannerState, CameraScanner notifier) {
     if (scannerState.hasError) {
       return ErrorWidgetView(
         errorMessage: scannerState.errorMessage ?? 'Unknown error',
@@ -184,9 +185,9 @@ class _CameraScannerScreenState extends ConsumerState<CameraScannerScreen> {
       );
     }
 
-    if (scannerState.isReady && notifier.controller != null) {
+    if (scannerState.isReady && scannerState.controller != null) {
       return CameraPreviewView(
-        controller: notifier.controller!,
+        controller: scannerState.controller!,
         isCapturing: scannerState.isCapturing,
         canSwitchCamera: scannerState.cameras.length > 1,
         onCapture: _handleCapture,
@@ -198,13 +199,12 @@ class _CameraScannerScreenState extends ConsumerState<CameraScannerScreen> {
     return const CameraLoadingView();
   }
 
-  IconData _getFlashIcon(flashMode) {
+  IconData _getFlashIcon(FlashMode flashMode) {
     return switch (flashMode) {
       FlashMode.off => Icons.flash_off,
       FlashMode.auto => Icons.flash_auto,
       FlashMode.always => Icons.flash_on,
       FlashMode.torch => Icons.flashlight_on,
-      _ => Icons.flash_off,
     };
   }
 }

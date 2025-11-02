@@ -13,9 +13,6 @@ class CameraScanner extends _$CameraScanner {
   static List<CameraDescription>? _cachedCameras;
   static Future<List<CameraDescription>>? _camerasFuture;
 
-  CameraController? _controller;
-  CameraController? get controller => _controller;
-
   bool _isInitializing = false;
   bool _hasScheduledWarmUp = false;
 
@@ -23,7 +20,7 @@ class CameraScanner extends _$CameraScanner {
   ScannerState build() {
     final keepAliveLink = ref.keepAlive();
     ref.onDispose(() {
-      _controller?.dispose();
+      state.controller?.dispose();
       keepAliveLink.close();
     });
     _scheduleWarmUp();
@@ -37,7 +34,7 @@ class CameraScanner extends _$CameraScanner {
   }
 
   Future<void> warmUp() async {
-    if (_controller?.value.isInitialized == true && state.isReady) return;
+    if (state.controller?.value.isInitialized == true && state.isReady) return;
     await initialize();
   }
 
@@ -57,7 +54,7 @@ class CameraScanner extends _$CameraScanner {
 
   Future<void> initialize() async {
     if (_isInitializing) return;
-    if (_controller?.value.isInitialized == true && state.isReady) return;
+    if (state.controller?.value.isInitialized == true && state.isReady) return;
 
     try {
       _isInitializing = true;
@@ -122,10 +119,10 @@ class CameraScanner extends _$CameraScanner {
           ? 0
           : (cameraIndex > maxIndex ? maxIndex : cameraIndex);
 
-      if (_controller != null &&
-          _controller!.description == state.cameras[targetIndex] &&
-          _controller!.value.isInitialized) {
-        await _controller!.setFlashMode(state.flashMode);
+      if (state.controller != null &&
+          state.controller!.description == state.cameras[targetIndex] &&
+          state.controller!.value.isInitialized) {
+        await state.controller!.setFlashMode(state.flashMode);
         state = state.copyWith(
           status: ScannerStatus.ready,
           selectedCameraIndex: targetIndex,
@@ -134,25 +131,26 @@ class CameraScanner extends _$CameraScanner {
         return;
       }
 
-      if (_controller != null) {
-        await _controller!.dispose();
+      if (state.controller != null) {
+        await state.controller!.dispose();
       }
 
-      _controller = CameraController(
+      final controller = CameraController(
         state.cameras[targetIndex],
         ResolutionPreset.medium,
         enableAudio: false,
       );
 
-      await _controller!.initialize();
+      await controller.initialize();
 
-      if (_controller!.value.isInitialized) {
-        await _controller!.setFlashMode(state.flashMode);
+      if (controller.value.isInitialized) {
+        await controller.setFlashMode(state.flashMode);
 
         state = state.copyWith(
           status: ScannerStatus.ready,
           selectedCameraIndex: targetIndex,
           errorMessage: null,
+          controller: controller,
         );
       } else {
         throw Exception('Camera failed to initialize');
@@ -167,12 +165,12 @@ class CameraScanner extends _$CameraScanner {
   }
 
   Future<String?> capturePhoto() async {
-    if (!state.isReady || _controller == null) return null;
+    if (!state.isReady || state.controller == null) return null;
 
     try {
       state = state.copyWith(status: ScannerStatus.capturing);
 
-      final XFile photo = await _controller!.takePicture();
+      final XFile photo = await state.controller!.takePicture();
 
       state = state.copyWith(status: ScannerStatus.ready);
 
@@ -188,7 +186,7 @@ class CameraScanner extends _$CameraScanner {
   }
 
   Future<void> toggleFlash() async {
-    if (!state.isReady || _controller == null) return;
+    if (!state.isReady || state.controller == null) return;
 
     try {
       final newFlashMode = switch (state.flashMode) {
@@ -198,7 +196,7 @@ class CameraScanner extends _$CameraScanner {
         FlashMode.torch => FlashMode.off,
       };
 
-      await _controller!.setFlashMode(newFlashMode);
+      await state.controller!.setFlashMode(newFlashMode);
       state = state.copyWith(flashMode: newFlashMode);
     } catch (e) {
       debugPrint('Error toggling flash: $e');

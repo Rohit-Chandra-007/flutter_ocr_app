@@ -21,9 +21,9 @@ class AppConstants {
   static const double cardBorderRadius = 16.0;
   static const double buttonBorderRadius = 15.0;
 
-  // PDF Processing
-  static const int pdfRenderWidth = 2000;
-  static const int pdfRenderHeight = 3000;
+  // PDF Processing - Higher resolution for better OCR on scanned documents
+  static const int pdfRenderWidth = 2480; // Increased for better quality
+  static const int pdfRenderHeight = 3508; // A4 aspect ratio at 300 DPI
 
   // OCR Processing Limits
   static const int maxPagesPerDocument = 25;

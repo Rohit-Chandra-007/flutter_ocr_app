@@ -40,17 +40,28 @@ class PDFService {
           page = await pdf.getPage(i);
           _logger.d('PDF: Page $i retrieved, rendering...');
 
+          // Render at high quality for better OCR on scanned documents
           final pageImage = await page.render(
             width: AppConstants.pdfRenderWidth.toDouble(),
             height: AppConstants.pdfRenderHeight.toDouble(),
+            format: PdfPageImageFormat.png, // PNG for lossless quality
+            backgroundColor: '#FFFFFF', // White background
           );
           _logger.d('PDF: Page $i rendered');
 
-          if (pageImage?.bytes != null) {
-            _logger.d('PDF: Writing page $i image to temp file');
+          if (pageImage?.bytes != null && pageImage!.bytes.isNotEmpty) {
+            _logger.d(
+                'PDF: Writing page $i image to temp file (${pageImage.bytes.length} bytes)');
             final imagePath = await FileUtils.getTempImagePath(i);
-            await FileUtils.writeImageBytes(imagePath, pageImage!.bytes);
+            await FileUtils.writeImageBytes(imagePath, pageImage.bytes);
             _logger.d('PDF: Page $i image written to: $imagePath');
+
+            // Verify file was written successfully
+            final file = File(imagePath);
+            if (!await file.exists()) {
+              _logger.e('PDF: Failed to write image file for page $i');
+              continue;
+            }
 
             // Create page and process OCR immediately
             _logger.d('PDF: Creating ScanPage for page $i');

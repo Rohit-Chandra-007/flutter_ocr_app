@@ -83,9 +83,11 @@ class _DocumentDetailScreenState extends ConsumerState<DocumentDetailScreen> {
   }
 
   void _shareText() {
-    Share.share(
-      widget.document.extractedText,
-      subject: widget.document.title,
+    SharePlus.instance.share(
+      ShareParams(
+        text: widget.document.extractedText,
+        subject: widget.document.title,
+      ),
     );
   }
 
@@ -232,10 +234,12 @@ class _DocumentDetailScreenState extends ConsumerState<DocumentDetailScreen> {
                       child: ElevatedButton.icon(
                         onPressed: () {
                           Navigator.pop(context);
-                          Share.share(
-                            page.extractedText,
-                            subject:
-                                '${widget.document.title} - Page ${page.pageNumber}',
+                          SharePlus.instance.share(
+                            ShareParams(
+                              text: page.extractedText,
+                              subject:
+                                  '${widget.document.title} - Page ${page.pageNumber}',
+                            ),
                           );
                         },
                         icon: const Icon(Icons.share),
