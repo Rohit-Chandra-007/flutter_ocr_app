@@ -1,3 +1,4 @@
+import 'package:logger/logger.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../../../core/models/scan_document.dart';
 import '../../../core/services/database_service.dart';
@@ -6,6 +7,7 @@ part 'scan_history_provider.g.dart';
 
 @riverpod
 class ScanHistory extends _$ScanHistory {
+  static final Logger _logger = Logger();
   @override
   Future<List<ScanDocument>> build() async {
     return await _loadScanHistory();
@@ -27,8 +29,20 @@ class ScanHistory extends _$ScanHistory {
   }
 
   Future<void> addScanDocument(ScanDocument document) async {
-    await DatabaseService.saveScanDocument(document);
-    ref.invalidateSelf();
+    try {
+      _logger.i('ScanHistory: Adding document: ${document.title}');
+      _logger.d('ScanHistory: Document has ${document.pages.length} pages');
+
+      await DatabaseService.saveScanDocument(document);
+      _logger.i('ScanHistory: Document saved to database successfully');
+
+      ref.invalidateSelf();
+      _logger.d('ScanHistory: Provider invalidated');
+    } catch (e, stackTrace) {
+      _logger.e('ScanHistory: Error adding document',
+          error: e, stackTrace: stackTrace);
+      rethrow;
+    }
   }
 
   Future<void> updateScanDocument(ScanDocument document) async {

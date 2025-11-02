@@ -1,7 +1,7 @@
 import 'package:camera/camera.dart';
-import 'package:flutter/material.dart' ;
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
+import 'package:logger/logger.dart';
 import '../../viewmodels/camera_scanner_provider.dart';
 import '../../viewmodels/document_processor_provider.dart';
 import '../widgets/camera_preview_view.dart';
@@ -19,25 +19,34 @@ class CameraScannerScreen extends ConsumerStatefulWidget {
 }
 
 class _CameraScannerScreenState extends ConsumerState<CameraScannerScreen> {
+  final Logger _logger = Logger();
+
   @override
   void initState() {
     super.initState();
+    _logger.i('CameraScreen: Initializing camera scanner');
     Future.microtask(() {
       ref.read(cameraScannerProvider.notifier).initialize();
     });
   }
 
   Future<void> _handleCapture() async {
-    final notifier = ref.read(cameraScannerProvider.notifier);
-    final imagePath = await notifier.capturePhoto();
-
-    if (imagePath == null) {
-      _showError('Failed to capture photo');
-      return;
-    }
-
     try {
+      _logger.i('CameraScreen: Capture button pressed');
+      final notifier = ref.read(cameraScannerProvider.notifier);
+
+      _logger.d('CameraScreen: Capturing photo');
+      final imagePath = await notifier.capturePhoto();
+      _logger.i('CameraScreen: Photo captured: $imagePath');
+
+      if (imagePath == null || imagePath.isEmpty) {
+        _logger.e('CameraScreen: Failed to capture photo - null or empty path');
+        _showError('Failed to capture photo');
+        return;
+      }
+
       // Show processing dialog
+      _logger.d('CameraScreen: Showing processing dialog');
       if (mounted) {
         showDialog(
           context: context,
@@ -46,19 +55,30 @@ class _CameraScannerScreenState extends ConsumerState<CameraScannerScreen> {
         );
       }
 
+      _logger.d('CameraScreen: Starting document processing');
       final success = await ref
           .read(documentProcessorProvider.notifier)
           .processImageFromCamera(imagePath);
+      _logger.i('CameraScreen: Document processing result: $success');
 
       // Close processing dialog
-      if (mounted) Navigator.of(context).pop();
+      if (mounted) {
+        _logger.d('CameraScreen: Closing processing dialog');
+        Navigator.of(context).pop();
+      }
 
       if (success) {
+        _logger.i('CameraScreen: Document scanned successfully');
         _showSuccess('Document scanned successfully!');
         await Future.delayed(const Duration(milliseconds: 1500));
         if (mounted) Navigator.of(context).pop();
+      } else {
+        _logger.w('CameraScreen: Document processing failed');
+        _showError('Failed to process document');
       }
-    } catch (e) {
+    } catch (e, stackTrace) {
+      _logger.e('CameraScreen: Error in _handleCapture',
+          error: e, stackTrace: stackTrace);
       // Close processing dialog
       if (mounted) Navigator.of(context).pop();
       _showError('Failed to process image: ${e.toString()}');

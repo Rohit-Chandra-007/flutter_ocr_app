@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:logger/logger.dart';
 import 'package:scanflow/core/constants/app_enum.dart';
 import 'package:scanflow/core/extensions/scan_source_extension.dart';
 import 'package:scanflow/core/utils/navigation_utils.dart';
@@ -22,12 +23,25 @@ class ScanOptionsGrid extends ConsumerStatefulWidget {
 }
 
 class _ScanOptionsGridState extends ConsumerState<ScanOptionsGrid> {
+  final Logger _logger = Logger();
   bool _isProcessing = false;
 
+  @override
+  void initState() {
+    super.initState();
+    _logger.i('ScanOptions: Initializing scan options grid');
+  }
+
   Future<void> _handleScanOption(ScanSource source) async {
-    if (_isProcessing) return;
+    _logger.i('ScanOptions: Scan option selected: ${source.name}');
+
+    if (_isProcessing) {
+      _logger.w('ScanOptions: Already processing, ignoring request');
+      return;
+    }
 
     if (source == ScanSource.camera) {
+      _logger.i('ScanOptions: Navigating to camera screen');
       NavigationUtils.navigateWithFadeSlide(
         context,
         const CameraScannerScreen(),
@@ -40,6 +54,7 @@ class _ScanOptionsGridState extends ConsumerState<ScanOptionsGrid> {
 
     try {
       // Show processing dialog
+      _logger.d('ScanOptions: Showing processing dialog');
       if (mounted) {
         showDialog(
           context: context,
@@ -50,17 +65,21 @@ class _ScanOptionsGridState extends ConsumerState<ScanOptionsGrid> {
 
       bool success = false;
 
+      _logger.d('ScanOptions: Processing source: ${source.name}');
       switch (source) {
         case ScanSource.gallery:
+          _logger.d('ScanOptions: Starting gallery image processing');
           success = await ref
               .read(documentProcessorProvider.notifier)
               .processImageFromGallery();
           break;
         case ScanSource.pdf:
+          _logger.d('ScanOptions: Starting PDF processing');
           success =
               await ref.read(documentProcessorProvider.notifier).processPDF();
           break;
         case ScanSource.multipleImages:
+          _logger.d('ScanOptions: Starting multiple images processing');
           success = await ref
               .read(documentProcessorProvider.notifier)
               .processMultipleImages();
@@ -69,20 +88,38 @@ class _ScanOptionsGridState extends ConsumerState<ScanOptionsGrid> {
           break;
       }
 
-      // Close processing dialog
-      if (mounted) Navigator.of(context).pop();
+      _logger.i('ScanOptions: Processing completed. Success: $success');
 
-      if (success) {
-        SnackbarUtils.showSuccess(context, 'Document processed successfully!');
-        await Future.delayed(const Duration(milliseconds: 1500));
-        if (mounted) Navigator.of(context).pop();
-      }
-    } catch (e) {
       // Close processing dialog
-      if (mounted) Navigator.of(context).pop();
-      SnackbarUtils.showError(context, e.toString());
+      if (mounted) {
+        _logger.d('ScanOptions: Closing processing dialog');
+        Navigator.of(context).pop();
+
+        if (success) {
+          _logger.i('ScanOptions: Showing success message');
+          SnackbarUtils.showSuccess(
+              context, 'Document processed successfully!');
+          await Future.delayed(const Duration(milliseconds: 1500));
+          if (mounted) Navigator.of(context).pop();
+        }
+      }
+    } catch (e, stackTrace) {
+      _logger.e('ScanOptions: Error processing scan option',
+          error: e, stackTrace: stackTrace);
+      // Close processing dialog
+      if (mounted) {
+        Navigator.of(context).pop();
+        // Extract clean error message
+        String errorMessage = e.toString();
+        if (errorMessage.startsWith('Exception: ')) {
+          errorMessage = errorMessage.substring('Exception: '.length);
+        }
+        SnackbarUtils.showError(context, errorMessage);
+      }
     } finally {
-      setState(() => _isProcessing = false);
+      if (mounted) {
+        setState(() => _isProcessing = false);
+      }
     }
   }
 

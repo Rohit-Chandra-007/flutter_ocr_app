@@ -33,7 +33,7 @@ final class ScanHistoryProvider
   ScanHistory create() => ScanHistory();
 }
 
-String _$scanHistoryHash() => r'3eaffb23a65765be3baf0598fa222efa777b4875';
+String _$scanHistoryHash() => r'739e02e3d683e6984cab1cc6b00ffc188c9e1ac3';
 
 abstract class _$ScanHistory extends $AsyncNotifier<List<ScanDocument>> {
   FutureOr<List<ScanDocument>> build();

@@ -10,19 +10,57 @@ part 'camera_scanner_provider.g.dart';
 
 @riverpod
 class CameraScanner extends _$CameraScanner {
+  static List<CameraDescription>? _cachedCameras;
+  static Future<List<CameraDescription>>? _camerasFuture;
+
   CameraController? _controller;
   CameraController? get controller => _controller;
 
+  bool _isInitializing = false;
+  bool _hasScheduledWarmUp = false;
+
   @override
   ScannerState build() {
+    final keepAliveLink = ref.keepAlive();
     ref.onDispose(() {
       _controller?.dispose();
+      keepAliveLink.close();
     });
+    _scheduleWarmUp();
     return const ScannerState();
   }
 
+  void _scheduleWarmUp() {
+    if (_hasScheduledWarmUp) return;
+    _hasScheduledWarmUp = true;
+    Future.microtask(warmUp);
+  }
+
+  Future<void> warmUp() async {
+    if (_controller?.value.isInitialized == true && state.isReady) return;
+    await initialize();
+  }
+
+  Future<List<CameraDescription>> _getAvailableCameras() async {
+    if (_cachedCameras != null && _cachedCameras!.isNotEmpty) {
+      return _cachedCameras!;
+    }
+
+    _camerasFuture ??= availableCameras();
+    final cameras = await _camerasFuture!;
+    _cachedCameras = cameras;
+    if (cameras.isNotEmpty) {
+      _camerasFuture = null;
+    }
+    return cameras;
+  }
+
   Future<void> initialize() async {
+    if (_isInitializing) return;
+    if (_controller?.value.isInitialized == true && state.isReady) return;
+
     try {
+      _isInitializing = true;
       state = state.copyWith(status: ScannerStatus.loading);
 
       // Check camera permission
@@ -38,7 +76,7 @@ class CameraScanner extends _$CameraScanner {
       }
 
       // Get available cameras
-      final cameras = await availableCameras();
+      final cameras = await _getAvailableCameras();
 
       if (cameras.isEmpty) {
         state = state.copyWith(
@@ -53,25 +91,56 @@ class CameraScanner extends _$CameraScanner {
         hasPermission: true,
       );
 
-      await setupCamera(0);
+      final targetIndex = state.selectedCameraIndex < cameras.length
+          ? state.selectedCameraIndex
+          : 0;
+
+      await setupCamera(targetIndex);
     } catch (e) {
       debugPrint('Error initializing camera: $e');
       state = state.copyWith(
         status: ScannerStatus.error,
         errorMessage: 'Failed to initialize camera: ${e.toString()}',
       );
+    } finally {
+      _isInitializing = false;
     }
   }
 
   Future<void> setupCamera(int cameraIndex) async {
     try {
+      if (state.cameras.isEmpty) {
+        state = state.copyWith(
+          status: ScannerStatus.error,
+          errorMessage: 'No cameras available to setup',
+        );
+        return;
+      }
+
+      final maxIndex = state.cameras.length - 1;
+      final targetIndex = cameraIndex < 0
+          ? 0
+          : (cameraIndex > maxIndex ? maxIndex : cameraIndex);
+
+      if (_controller != null &&
+          _controller!.description == state.cameras[targetIndex] &&
+          _controller!.value.isInitialized) {
+        await _controller!.setFlashMode(state.flashMode);
+        state = state.copyWith(
+          status: ScannerStatus.ready,
+          selectedCameraIndex: targetIndex,
+          errorMessage: null,
+        );
+        return;
+      }
+
       if (_controller != null) {
         await _controller!.dispose();
       }
 
       _controller = CameraController(
-        state.cameras[cameraIndex],
-        ResolutionPreset.high,
+        state.cameras[targetIndex],
+        ResolutionPreset.medium,
         enableAudio: false,
       );
 
@@ -82,7 +151,7 @@ class CameraScanner extends _$CameraScanner {
 
         state = state.copyWith(
           status: ScannerStatus.ready,
-          selectedCameraIndex: cameraIndex,
+          selectedCameraIndex: targetIndex,
           errorMessage: null,
         );
       } else {
