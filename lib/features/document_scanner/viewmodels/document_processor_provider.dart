@@ -12,12 +12,15 @@ import '../../home/viewmodels/scan_history_provider.dart';
 
 part 'document_processor_provider.g.dart';
 
-@Riverpod(keepAlive: true)
+@riverpod
 class DocumentProcessor extends _$DocumentProcessor {
   static final Logger _logger = Logger();
 
   @override
-  FutureOr<void> build() {}
+  FutureOr<void> build() {
+    // Keep provider alive during async operations
+    ref.keepAlive();
+  }
 
   Future<bool> processImageFromCamera(String imagePath) async {
     try {

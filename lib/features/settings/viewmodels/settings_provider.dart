@@ -12,7 +12,7 @@ class Settings extends _$Settings {
   @override
   SettingsState build() {
     final themeModeAsync = ref.watch(themeProvider);
-    
+
     return SettingsState(
       themeMode: themeModeAsync.value ?? ThemeMode.system,
       appVersion: AppConstants.kAppVersion,
@@ -20,7 +20,7 @@ class Settings extends _$Settings {
     );
   }
 
-  Future<void> changeTheme(themeMode) async {
+  Future<void> changeTheme(ThemeMode themeMode) async {
     await ref.read(themeProvider.notifier).setThemeMode(themeMode);
   }
 }

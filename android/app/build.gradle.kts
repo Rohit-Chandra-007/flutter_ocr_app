@@ -61,3 +61,13 @@ android {
 flutter {
     source = "../.."
 }
+
+dependencies {
+    // ML Kit Text Recognition - Devanagari (Hindi, Marathi, Sanskrit, Nepali)
+    implementation("com.google.mlkit:text-recognition-devanagari:16.0.0")
+    
+    // Optional: Add other language packages if needed
+    // implementation("com.google.mlkit:text-recognition-chinese:16.0.0")
+    // implementation("com.google.mlkit:text-recognition-japanese:16.0.0")
+    // implementation("com.google.mlkit:text-recognition-korean:16.0.0")
+}

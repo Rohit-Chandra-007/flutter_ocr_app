@@ -20,7 +20,7 @@ final class DocumentProcessorProvider
           argument: null,
           retry: null,
           name: r'documentProcessorProvider',
-          isAutoDispose: false,
+          isAutoDispose: true,
           dependencies: null,
           $allTransitiveDependencies: null,
         );
@@ -33,7 +33,7 @@ final class DocumentProcessorProvider
   DocumentProcessor create() => DocumentProcessor();
 }
 
-String _$documentProcessorHash() => r'ce8465e3b5df12cda43a60e3e3f8cd00a032f518';
+String _$documentProcessorHash() => r'410976e6f519bf462a5ce61efb783b8c817d3436';
 
 abstract class _$DocumentProcessor extends $AsyncNotifier<void> {
   FutureOr<void> build();

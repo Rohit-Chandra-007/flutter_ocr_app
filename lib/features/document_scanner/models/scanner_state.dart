@@ -9,6 +9,7 @@ class ScannerState {
   final bool hasPermission;
   final String? errorMessage;
   final double processingProgress;
+  final CameraController? controller;
 
   const ScannerState({
     this.status = ScannerStatus.initial,
@@ -18,6 +19,7 @@ class ScannerState {
     this.hasPermission = false,
     this.errorMessage,
     this.processingProgress = 0.0,
+    this.controller,
   });
 
   bool get isLoading => status == ScannerStatus.loading;
@@ -35,6 +37,7 @@ class ScannerState {
     bool? hasPermission,
     String? errorMessage,
     double? processingProgress,
+    CameraController? controller,
   }) {
     return ScannerState(
       status: status ?? this.status,
@@ -44,6 +47,7 @@ class ScannerState {
       hasPermission: hasPermission ?? this.hasPermission,
       errorMessage: errorMessage,
       processingProgress: processingProgress ?? this.processingProgress,
+      controller: controller ?? this.controller,
     );
   }
 }

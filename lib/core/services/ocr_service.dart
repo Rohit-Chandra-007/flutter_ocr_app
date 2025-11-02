@@ -1,24 +1,95 @@
+import 'dart:io';
 
 import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
 import 'package:logger/logger.dart';
 import '../models/scan_page.dart';
+import '../utils/file_utils.dart';
 
 class OCRService {
   static final Logger _logger = Logger();
-  static final TextRecognizer _textRecognizer = TextRecognizer();
 
-  /// Extract text from a single image on the main isolate.
+  // Text recognizers for different scripts
+  // Latin recognizer (English, European languages)
+  static final TextRecognizer _latinRecognizer =
+      TextRecognizer(script: TextRecognitionScript.latin);
+
+  // Devanagiri recognizer (Hindi, Marathi, Sanskrit, Nepali)
+  static final TextRecognizer _devanagiriRecognizer =
+      TextRecognizer(script: TextRecognitionScript.devanagiri);
+
+  /// Extract text from a single image using both Latin and Devanagari recognizers.
+  /// This method tries both scripts and combines the results for maximum text extraction.
+  /// Supports:
+  /// - Latin scripts (English, Spanish, French, German, etc.)
+  /// - Devanagari (Hindi, Marathi, Sanskrit, Nepali)
   static Future<String> extractTextFromImage(String imagePath) async {
     try {
-      _logger.i('OCR: Starting text extraction for: $imagePath');
-      final inputImage = InputImage.fromFilePath(imagePath);
-      _logger.d('OCR: InputImage created successfully');
+      _logger.i('OCR: Starting multi-language text extraction for: $imagePath');
 
-      final result = await _textRecognizer.processImage(inputImage);
-      _logger
-          .i('OCR: Text extraction completed. Length: ${result.text.length}');
+      // Validate image file
+      if (!await FileUtils.isValidImageFile(imagePath)) {
+        _logger.e('OCR: Invalid or corrupted image file: $imagePath');
+        return '';
+      }
 
-      return result.text;
+      // Check file size (skip if too large - over 10MB)
+      final file = File(imagePath);
+      final fileSize = await file.length();
+      _logger.d(
+          'OCR: File size: ${(fileSize / 1024 / 1024).toStringAsFixed(2)} MB');
+      if (fileSize > 10 * 1024 * 1024) {
+        _logger.w(
+            'OCR: File too large for processing: ${(fileSize / 1024 / 1024).toStringAsFixed(2)} MB');
+        return '';
+      }
+
+      // Create InputImage with error handling
+      final InputImage inputImage;
+      try {
+        inputImage = InputImage.fromFilePath(imagePath);
+        _logger.d('OCR: InputImage created successfully');
+      } catch (e) {
+        _logger.e('OCR: Failed to create InputImage from path: $e');
+        return '';
+      }
+
+      // Try both Latin and Devanagari recognizers
+      final results = <String>[];
+
+      // Try Latin script first
+      try {
+        _logger.d('OCR: Processing with Latin recognizer');
+        final latinResult = await _latinRecognizer.processImage(inputImage);
+        if (latinResult.text.isNotEmpty) {
+          results.add(latinResult.text);
+          _logger
+              .d('OCR: Latin text extracted: ${latinResult.text.length} chars');
+        }
+      } catch (e) {
+        _logger.w('OCR: Latin recognition failed: $e');
+      }
+
+      // Try Devanagiri script (Hindi)
+      try {
+        _logger.d('OCR: Processing with Devanagiri recognizer');
+        final devanagiriResult =
+            await _devanagiriRecognizer.processImage(inputImage);
+        if (devanagiriResult.text.isNotEmpty) {
+          results.add(devanagiriResult.text);
+          _logger.d(
+              'OCR: Devanagiri text extracted: ${devanagiriResult.text.length} chars');
+        }
+      } catch (e) {
+        _logger.w('OCR: Devanagiri recognition failed: $e');
+      }
+
+      // Combine results
+      final combinedText = results.join('\n\n');
+
+      _logger.i(
+          'OCR: Multi-language extraction completed. Total length: ${combinedText.length}');
+
+      return combinedText;
     } catch (e, stackTrace) {
       _logger.e('OCR: Error extracting text from image',
           error: e, stackTrace: stackTrace);
@@ -52,6 +123,8 @@ class OCRService {
         if (extractedText.isNotEmpty) {
           page.updateWithOcrText(extractedText);
           _logger.d('OCR: Page ${i + 1} updated with OCR text');
+        } else {
+          _logger.w('OCR: No text extracted for page ${i + 1}');
         }
 
         pages.add(page);
@@ -85,6 +158,7 @@ class OCRService {
   }
 
   static Future<void> dispose() async {
-    await _textRecognizer.close();
+    await _latinRecognizer.close();
+    await _devanagiriRecognizer.close();
   }
 }
