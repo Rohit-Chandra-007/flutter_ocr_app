@@ -39,7 +39,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     // Navigate when splash completes
-    ref.listen(splashProvider, (previous, next) {
+    ref.listen(splashProvider, (_, next) {
       if (!next.isLoading) {
         widget.onComplete();
       }

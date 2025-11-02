@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import 'package:scanflow/features/home/views/screens/home_screen.dart';
 import '../screens/splash_screen.dart';
 

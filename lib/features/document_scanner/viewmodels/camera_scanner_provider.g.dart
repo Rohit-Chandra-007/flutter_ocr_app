@@ -41,7 +41,7 @@ final class CameraScannerProvider
   }
 }
 
-String _$cameraScannerHash() => r'a2610cde3a1535c9771aa5e036ba3f70d758d9ad';
+String _$cameraScannerHash() => r'28cca5b3e825fcf8adb70ff82024b4a3c8fcf5dc';
 
 abstract class _$CameraScanner extends $Notifier<ScannerState> {
   ScannerState build();

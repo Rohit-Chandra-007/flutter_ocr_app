@@ -41,6 +41,7 @@ dependencies:
   
   cupertino_icons: ^1.0.8
   flutter_launcher_icons: ^0.14.4
+  logger: ^2.6.2
  
 
   
