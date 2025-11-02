@@ -8,14 +8,14 @@ import '../models/scanner_state.dart';
 
 part 'camera_scanner_provider.g.dart';
 
+// Camera coordination state (outside notifier class)
+List<CameraDescription>? _cachedCameras;
+Future<List<CameraDescription>>? _camerasFuture;
+bool _isInitializing = false;
+bool _hasScheduledWarmUp = false;
+
 @riverpod
 class CameraScanner extends _$CameraScanner {
-  static List<CameraDescription>? _cachedCameras;
-  static Future<List<CameraDescription>>? _camerasFuture;
-
-  bool _isInitializing = false;
-  bool _hasScheduledWarmUp = false;
-
   @override
   ScannerState build() {
     final keepAliveLink = ref.keepAlive();
